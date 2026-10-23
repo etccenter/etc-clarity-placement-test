@@ -386,6 +386,67 @@
         </div>
     </div>
 
+    <!-- FIREBASE INITIALIZATION SCRIPT -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'etc-placement-app';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            apiKey: "dummy-api-key",
+            authDomain: "etc-placement.firebaseapp.com",
+            projectId: "etc-placement",
+            storageBucket: "etc-placement.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef"
+        };
+
+        let app, db, auth;
+        let dbSubmissionsList = [];
+
+        try {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+
+            // Authenticate first
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
+            }
+
+            // Real-time listener for submissions from Firestore
+            const submissionsCol = collection(db, 'artifacts', appId, 'public', 'data', 'placement_submissions');
+            onSnapshot(submissionsCol, (snapshot) => {
+                dbSubmissionsList = [];
+                snapshot.forEach(doc => {
+                    dbSubmissionsList.push({ id: doc.id, ...doc.data() });
+                });
+                window.remoteSubmissions = dbSubmissionsList;
+                if (typeof window.renderAdminTable === 'function') {
+                    window.renderAdminTable();
+                }
+            }, (error) => {
+                console.warn("Firestore listener error, fallback to local storage:", error);
+            });
+        } catch (err) {
+            console.warn("Firebase failed to initialize, using local persistent fallback:", err);
+        }
+
+        // Global DB Save Helper
+        window.saveSubmissionToFirestore = async function(record) {
+            try {
+                if (db && auth.currentUser) {
+                    const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'placement_submissions');
+                    await addDoc(colRef, record);
+                }
+            } catch (err) {
+                console.error("Error saving submission to Firestore:", err);
+            }
+        };
+    </script>
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
@@ -697,7 +758,6 @@
 
                 if (testState.timeRemainingSeconds <= 0) {
                     clearInterval(testState.timerInterval);
-                    alert("Test time limit (30 minutes) reached! Auto-submitting your current progress.");
                     finishTestAndShowResult();
                 }
             }, 1000);
@@ -905,7 +965,7 @@
                 detailedContainer.appendChild(sectionBlock);
             });
 
-            // Save record to storage
+            // Save record to local storage & persistent database
             const submissionRecord = {
                 id: 'sub_' + Date.now(),
                 timestamp: new Date().toLocaleString(),
@@ -917,7 +977,10 @@
                 detailedAnswers: testState.detailedAnswers
             };
 
-            saveSubmissionRecord(submissionRecord);
+            saveSubmissionRecordLocal(submissionRecord);
+            if (typeof window.saveSubmissionToFirestore === 'function') {
+                await window.saveSubmissionToFirestore(submissionRecord);
+            }
 
             // UI view switch
             document.getElementById('stepTest').classList.add('hidden');
@@ -928,14 +991,17 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // DATABASE STORAGE (LOCALSTORAGE BACKUP)
-        function saveSubmissionRecord(record) {
+        // STORAGE FALLBACK
+        function saveSubmissionRecordLocal(record) {
             let submissions = JSON.parse(localStorage.getItem('etc_placement_submissions') || '[]');
             submissions.push(record);
             localStorage.setItem('etc_placement_submissions', JSON.stringify(submissions));
         }
 
         function getAllSubmissions() {
+            if (window.remoteSubmissions && window.remoteSubmissions.length > 0) {
+                return window.remoteSubmissions;
+            }
             return JSON.parse(localStorage.getItem('etc_placement_submissions') || '[]');
         }
 
@@ -978,8 +1044,8 @@
             const searchTerm = (document.getElementById('adminSearchInput').value || '').toLowerCase();
 
             const filtered = records.filter(r => 
-                r.studentName.toLowerCase().includes(searchTerm) || 
-                r.studentPhone.toLowerCase().includes(searchTerm)
+                (r.studentName || '').toLowerCase().includes(searchTerm) || 
+                (r.studentPhone || '').toLowerCase().includes(searchTerm)
             );
 
             // Update stats
@@ -1000,7 +1066,7 @@
                 return;
             }
 
-            filtered.reverse().forEach(rec => {
+            filtered.slice().reverse().forEach(rec => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-gray-50 transition border-b border-gray-100";
 
@@ -1109,6 +1175,10 @@
             link.click();
             document.body.removeChild(link);
         }
+
+        // Attach global functions to window
+        window.renderAdminTable = renderAdminTable;
+        window.viewStudentAudit = viewStudentAudit;
     </script>
 </body>
 </html>
