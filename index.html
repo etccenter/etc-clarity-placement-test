@@ -4,1181 +4,1298 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ETC - Tenses Placement Test</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        etcRed: '#DC2626',
-                        etcRedDark: '#B91C1C',
-                        etcDark: '#111827',
-                        etcGray: '#F9FAFB'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- XLSX library for Admin Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
+        :root {
+            --primary-black: #111111;
+            --accent-red: #D32F2F;
+            --hover-red: #B71C1C;
+            --bg-white: #FFFFFF;
+            --card-bg: #FAFAFA;
+            --border-color: #E0E0E0;
+            --text-main: #111111;
+            --text-muted: #666666;
+            --success-green: #2E7D32;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
         body {
-            font-family: 'Inter', 'Noto Sans Arabic', sans-serif;
-            background-color: #FFFFFF;
-            color: #111827;
+            background-color: var(--bg-white);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        .arabic-text {
-            font-family: 'Noto Sans Arabic', sans-serif;
-            direction: rtl;
+
+        header {
+            border-bottom: 2px solid var(--primary-black);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-white);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .custom-radio:checked + label {
-            border-color: #DC2626;
-            background-color: #FEF2F2;
-            color: #B91C1C;
+
+        .logo-title h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--primary-black);
         }
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+
+        .logo-title h1 span {
+            color: var(--accent-red);
         }
-        ::-webkit-scrollbar-track {
-            background: #F1F1F1;
+
+        .logo-title p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #D1D5DB;
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .timer-box {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--primary-black);
+            color: white;
+            padding: 0.5rem 1rem;
             border-radius: 4px;
+            font-weight: 700;
+            font-mono: monospace;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #9CA3AF;
+
+        .timer-box.warning {
+            background: var(--accent-red);
+        }
+
+        .btn {
+            background: var(--primary-black);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background: var(--accent-red);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-black);
+            border: 1px solid var(--primary-black);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-black);
+            color: white;
+        }
+
+        main {
+            flex: 1;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Screen Sections */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Registration & Instructions */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-black);
+            border-bottom: 2px solid var(--accent-red);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .bilingual-instructions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .bilingual-instructions .ar {
+            direction: rtl;
+            text-align: right;
+            border-right: 2px solid var(--border-color);
+            padding-right: 1rem;
+        }
+
+        .bilingual-instructions .en {
+            padding-left: 0.5rem;
+        }
+
+        .instruction-item {
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-black);
+        }
+
+        /* Test Section */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-black);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+
+        .part-block {
+            margin-bottom: 2rem;
+        }
+
+        .part-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--accent-red);
+        }
+
+        .question-item {
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            padding: 1.2rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .options-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.6rem;
+        }
+
+        .option-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid var(--border-color);
+            padding: 0.6rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary-black);
+            background: #f0f0f0;
+        }
+
+        .option-btn input[type="radio"] {
+            accent-color: var(--accent-red);
+        }
+
+        .text-input-field {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        /* Results & Report */
+        .result-card {
+            text-align: center;
+            padding: 2.5rem 1.5rem;
+        }
+
+        .level-badge {
+            display: inline-block;
+            background: var(--accent-red);
+            color: white;
+            font-size: 2rem;
+            font-weight: 800;
+            padding: 0.5rem 2rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+
+        .report-breakdown {
+            text-align: left;
+            margin-top: 2rem;
+        }
+
+        .report-section {
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .report-section-header {
+            background: var(--primary-black);
+            color: white;
+            padding: 0.6rem 1rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .report-q-item {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        .report-q-item:last-child {
+            border-bottom: none;
+        }
+
+        .correct-answer {
+            color: var(--success-green);
+            font-weight: 600;
+        }
+
+        .wrong-answer {
+            color: var(--accent-red);
+            font-weight: 600;
+        }
+
+        /* Admin Panel */
+        .admin-controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--primary-black);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 6px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .bilingual-instructions {
+                grid-template-columns: 1fr;
+            }
+            .bilingual-instructions .ar {
+                border-right: none;
+                border-bottom: 2px solid var(--border-color);
+                padding-right: 0;
+                padding-bottom: 1rem;
+            }
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
         }
     </style>
 </head>
-<body class="bg-white text-gray-900 min-h-screen flex flex-col justify-between selection:bg-red-500 selection:text-white">
+<body>
 
-    <!-- Header -->
-    <header class="border-b border-gray-200 sticky top-0 bg-white/95 backdrop-blur-md z-40">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <div class="bg-red-600 text-white font-bold text-xl px-3 py-1.5 rounded-lg tracking-wider">ETC</div>
-                <div>
-                    <h1 class="font-bold text-lg leading-tight tracking-tight text-gray-900">Educational Trust Center</h1>
-                    <p class="text-xs text-gray-500 font-medium">Tenses Placement Test</p>
-                </div>
-            </div>
-
-            <!-- Header Actions -->
-            <div class="flex items-center space-x-4">
-                <!-- Live Timer (Shown during active test) -->
-                <div id="timerContainer" class="hidden flex items-center bg-red-50 text-red-700 px-3.5 py-1.5 rounded-lg font-mono font-bold text-sm border border-red-200 shadow-sm animate-pulse">
-                    <i class="fa-regular fa-clock mr-2"></i>
-                    <span id="timerDisplay">30:00</span>
-                </div>
-
-                <!-- Admin Button -->
-                <button onclick="openAdminModal()" class="text-xs font-semibold px-3.5 py-2 border border-gray-300 rounded-lg hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-200 flex items-center gap-1.5 shadow-sm">
-                    <i class="fa-solid fa-user-shield"></i>
-                    <span>Admin Dashboard</span>
-                </button>
-            </div>
+    <header>
+        <div class="logo-title">
+            <h1>ETC <span>Educational Trust Center</span></h1>
+            <p>Tenses Placement Test</p>
         </div>
-        <!-- Progress Bar for Active Test -->
-        <div id="globalProgressBarContainer" class="w-full bg-gray-100 h-1 hidden">
-            <div id="globalProgressBar" class="bg-red-600 h-1 w-0 transition-all duration-500"></div>
+        <div class="header-actions">
+            <div id="timerBox" class="timer-box">
+                ⏱️ <span id="timerDisplay">30:00</span>
+            </div>
+            <button id="adminNavBtn" class="btn btn-outline" onclick="toggleAdminView()">Admin Login</button>
         </div>
     </header>
 
-    <!-- Main Container -->
-    <main class="max-w-4xl mx-auto px-4 py-8 flex-grow w-full">
-
-        <!-- 1. REGISTRATION & INSTRUCTIONS STEP -->
-        <section id="stepRegistration" class="space-y-8 max-w-3xl mx-auto">
-            <div class="text-center space-y-2">
-                <span class="bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">Online Assessment</span>
-                <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">Tenses Placement Test</h2>
-                <p class="text-gray-500 text-sm">Please read the instructions carefully before starting your test.</p>
-            </div>
-
-            <!-- Dual Language Instructions Card -->
-            <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6 md:p-8 space-y-6 shadow-sm">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 border-b border-gray-200 pb-6">
-                    <!-- English Instructions -->
-                    <div class="space-y-3">
-                        <h3 class="font-bold text-gray-900 text-sm uppercase tracking-wider flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-red-600"></span> Test Instructions (English)
-                        </h3>
-                        <ol class="text-xs text-gray-600 space-y-2 list-decimal pl-4 leading-relaxed">
-                            <li><strong class="text-gray-800">Interactive Format:</strong> This test is conducted interactively online and is divided into progressive levels (Elementary A1 to Advanced C1).</li>
-                            <li><strong class="text-gray-800">Answering Questions:</strong> Select the correct option (a, b, c, or d) or type your answer in the provided space for each question.</li>
-                            <li><strong class="text-gray-800">Progression Rules:</strong> Each section is scored out of 30 marks. Based on your score, the system will determine whether you advance to the next level or complete the test at your current level.</li>
-                            <li><strong class="text-gray-800">Important Notice:</strong> Do not refresh or close your browser window during the test, as your progress may be lost. Work carefully through each section. (Duration: 30 mins)</li>
-                        </ol>
+    <main>
+        <!-- SCREEN 1: REGISTRATION -->
+        <div id="screenRegistration" class="screen active">
+            <div class="card">
+                <h2>Test Instructions / تعليمات الاختبار</h2>
+                <div class="bilingual-instructions">
+                    <div class="en">
+                        <div class="instruction-item"><strong>1. Interactive Format:</strong> This test is conducted interactively online and is divided into progressive levels (Elementary A1 to Advanced C1).</div>
+                        <div class="instruction-item"><strong>2. Answering Questions:</strong> Select the correct option (a, b, c, or d) or type your answer in the provided space for each question.</div>
+                        <div class="instruction-item"><strong>3. Progression Rules:</strong> Each section is scored out of 30 marks. Based on your score, the system will determine whether you advance to the next level or complete the test at your current level.</div>
+                        <div class="instruction-item"><strong>4. Important Notice:</strong> Do not refresh or close your browser window during the test, as your progress may be lost. Work carefully through each section.</div>
                     </div>
-
-                    <!-- Arabic Instructions -->
-                    <div class="space-y-3 arabic-text border-t md:border-t-0 md:border-r md:border-gray-200 pt-4 md:pt-0 md:pr-4">
-                        <h3 class="font-bold text-gray-900 text-sm uppercase tracking-wider flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-red-600"></span> تعليمات الاختبار (العربية)
-                        </h3>
-                        <ol class="text-xs text-gray-600 space-y-2 list-decimal pr-4 leading-relaxed">
-                            <li><strong class="text-gray-800">التنسيق التفاعلي:</strong> يُجرى هذا الاختبار تفاعلياً عبر الإنترنت ومقسم إلى مستويات متدرجة (من المبتدئ A1 إلى المتقدم C1).</li>
-                            <li><strong class="text-gray-800">إجابة الأسئلة:</strong> حدد الخيار الصحيح (a أو b أو c أو d) أو اكتب إجابتك في المساحة المخصصة لكل سؤال.</li>
-                            <li><strong class="text-gray-800">قواعد الانتقال:</strong> يتم تقييم كل قسم من 30 درجة. بناءً على درجتك، سيحدد النظام ما إذا كنت ستنتقل إلى المستوى التالي أم ستنهي الاختبار عند مستواك الحالي.</li>
-                            <li><strong class="text-gray-800">تنبيه هام:</strong> لا تقم بتحديث نافذة المتصفح أو إغلاقها أثناء الاختبار، حتى لا تفقد تقدمك. يعمل الاختبار بمهلة 30 دقيقة.</li>
-                        </ol>
+                    <div class="ar">
+                        <div class="instruction-item"><strong>1. نمط تفاعلي:</strong> يُجرى هذا الاختبار بشكل تفاعلي عبر الإنترنت ومقسّم إلى مستويات متدرجة (من المبتدئ A1 إلى المتقدم C1).</div>
+                        <div class="instruction-item"><strong>2. الإجابة عن الأسئلة:</strong> اختر الإجابة الصحيحة (a, b, c, or d) أو اكتب إجابتك في الفراغ المخصص لكل سؤال.</div>
+                        <div class="instruction-item"><strong>3. قواعد الانتقال:</strong> يُقيم كل قسم من 30 درجة. وبناءً على درجتك، سيحدد النظام ما إذا كنت ستنتقل إلى المستوى التالي أم ستنهي الاختبار عند مستواك الحالي.</div>
+                        <div class="instruction-item"><strong>4. تنبيه هام:</strong> لا تقم بتحديث أو إغلاق صفحة المتصفح أثناء الاختبار لعدم فقدان تقدمك. أجب بدقة في كل قسم.</div>
                     </div>
                 </div>
 
-                <!-- Registration Form -->
-                <form id="registrationForm" onsubmit="handleStartTest(event)" class="space-y-5 pt-2">
-                    <h3 class="font-bold text-gray-900 text-base">Student Information / معلومات الطالب</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Full Name / الاسم الكامل <span class="text-red-600">*</span></label>
-                            <input type="text" id="studentName" required placeholder="e.g. Sarah Ahmad" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Phone Number / رقم الهاتف <span class="text-red-600">*</span></label>
-                            <input type="tel" id="studentPhone" required placeholder="e.g. +963 9XX XXX XXX" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition">
-                        </div>
+                <h2>Student Details / بيانات الطالب</h2>
+                <form id="startForm" onsubmit="startTest(event)">
+                    <div class="form-group">
+                        <label for="studentName">Full Name / الاسم الكامل *</label>
+                        <input type="text" id="studentName" required placeholder="e.g. John Doe">
                     </div>
-
-                    <div class="pt-4 flex justify-end">
-                        <button type="submit" class="w-full md:w-auto px-8 py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow-lg shadow-red-200 transition-all duration-200 flex items-center justify-center gap-2 group">
-                            <span>Begin Assessment / بدء الاختبار</span>
-                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-                        </button>
+                    <div class="form-group">
+                        <label for="studentPhone">Phone Number / رقم الهاتف *</label>
+                        <input type="tel" id="studentPhone" required placeholder="e.g. +1234567890">
                     </div>
+                    <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Start Test / بدء الاختبار</button>
                 </form>
             </div>
-        </section>
-
-        <!-- 2. TEST SECTION SCREEN -->
-        <section id="stepTest" class="hidden space-y-6">
-            <!-- Level Indicator Badge Header -->
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gray-900 text-white p-5 rounded-2xl shadow-md">
-                <div>
-                    <span class="text-xs uppercase tracking-widest text-red-400 font-semibold" id="sectionSubTitle">Current Assessment Level</span>
-                    <h2 class="text-2xl font-bold tracking-tight" id="sectionTitle">Elementary: A1</h2>
-                </div>
-                <div class="flex items-center gap-4 bg-gray-800 px-4 py-2 rounded-xl text-sm border border-gray-700">
-                    <div>
-                        <span class="text-gray-400 block text-xs">Section Passing Threshold</span>
-                        <span class="font-bold text-red-400" id="sectionThreshold">20 / 30 Marks</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Questions Form Dynamic Render -->
-            <form id="testSectionForm" onsubmit="handleSectionSubmit(event)" class="space-y-8">
-                <div id="questionsContainer" class="space-y-6">
-                    <!-- Dynamic Questions Injection -->
-                </div>
-
-                <!-- Submit Button -->
-                <div class="sticky bottom-4 bg-white/90 backdrop-blur-md p-4 rounded-2xl border border-gray-200 shadow-xl flex justify-between items-center z-30">
-                    <span class="text-xs text-gray-500 font-medium">Ensure all questions are answered before proceeding.</span>
-                    <button type="submit" class="px-8 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
-                        <span>Submit Section</span>
-                        <i class="fa-solid fa-paper-plane"></i>
-                    </button>
-                </div>
-            </form>
-        </section>
-
-        <!-- 3. RESULT & FINAL REPORT SCREEN -->
-        <section id="stepResult" class="hidden space-y-8 max-w-3xl mx-auto">
-            <!-- Result Summary Card -->
-            <div class="bg-white border border-gray-200 rounded-2xl p-8 text-center space-y-6 shadow-lg relative overflow-hidden">
-                <div class="absolute top-0 left-0 right-0 h-3 bg-red-600"></div>
-                <div class="w-20 h-20 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto text-3xl shadow-inner border border-red-100">
-                    <i class="fa-solid fa-award"></i>
-                </div>
-                <div class="space-y-2">
-                    <span class="text-xs font-bold tracking-widest text-gray-400 uppercase">Assessment Completed</span>
-                    <h2 class="text-3xl font-black text-gray-900 tracking-tight">Your Assigned English Level</h2>
-                    <div id="resultBadge" class="inline-block bg-red-600 text-white px-6 py-2.5 rounded-full text-2xl font-black shadow-md">
-                        A1 - Elementary
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 pt-4 border-t border-gray-100 max-w-lg mx-auto text-left text-xs">
-                    <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
-                        <span class="text-gray-500 block">Student Name</span>
-                        <span class="font-bold text-gray-900 text-sm" id="resStudentName">-</span>
-                    </div>
-                    <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
-                        <span class="text-gray-500 block">Phone Number</span>
-                        <span class="font-bold text-gray-900 text-sm" id="resStudentPhone">-</span>
-                    </div>
-                    <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 col-span-2 md:col-span-1">
-                        <span class="text-gray-500 block">Completion Time</span>
-                        <span class="font-bold text-gray-900 text-sm" id="resTimeTaken">-</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Level Progression Breakdown -->
-            <div class="bg-white border border-gray-200 rounded-2xl p-6 space-y-4 shadow-sm">
-                <h3 class="font-bold text-gray-900 text-base border-b pb-3 flex items-center justify-between">
-                    <span>Section Score Breakdown</span>
-                    <span class="text-xs text-gray-500 font-normal">Scores out of 30</span>
-                </h3>
-                <div id="scoreBreakdownList" class="space-y-3">
-                    <!-- Dynamic score breakdown -->
-                </div>
-            </div>
-
-            <!-- Complete Detailed Report -->
-            <div class="bg-white border border-gray-200 rounded-2xl p-6 space-y-6 shadow-sm">
-                <div class="flex items-center justify-between border-b pb-4">
-                    <h3 class="font-bold text-gray-900 text-lg">Detailed Question Report</h3>
-                    <span class="text-xs text-gray-500">Review your answered items</span>
-                </div>
-                <div id="detailedReportContainer" class="space-y-8">
-                    <!-- Dynamic Question Breakdown -->
-                </div>
-            </div>
-
-            <div class="text-center pt-4">
-                <button onclick="window.location.reload()" class="px-6 py-2.5 border border-gray-300 font-semibold text-gray-700 hover:bg-gray-900 hover:text-white rounded-xl text-sm transition">
-                    Take New Test / إعادة الاختبار
-                </button>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="border-t border-gray-200 bg-gray-50 py-6 text-center text-xs text-gray-500 mt-12">
-        <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-2">
-            <span>&copy; Educational Trust Center (ETC). All rights reserved.</span>
-            <span>Tenses Placement Test • Online Evaluation System</span>
         </div>
-    </footer>
 
-    <!-- ADMIN LOGIN MODAL -->
-    <div id="adminLoginModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-gray-200 space-y-5">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="font-bold text-gray-900 flex items-center gap-2">
-                    <i class="fa-solid fa-lock text-red-600"></i> Admin Authentication
-                </h3>
-                <button onclick="closeAdminModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+        <!-- SCREEN 2: TEST CONTAINER -->
+        <div id="screenTest" class="screen">
+            <div id="testContainer"></div>
+            <div style="display: flex; justify-content: flex-end; margin-top: 1.5rem;">
+                <button class="btn" onclick="submitCurrentSection()">Submit Section & Continue &rarr;</button>
             </div>
-            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Passcode</label>
-                    <input type="password" id="adminPassword" required placeholder="Enter admin password" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none">
-                </div>
-                <div id="adminLoginError" class="text-red-600 text-xs hidden font-medium">
-                    Incorrect passcode. Please try again.
-                </div>
-                <button type="submit" class="w-full py-2.5 bg-gray-900 hover:bg-black text-white font-bold rounded-xl text-sm transition">
-                    Login to Dashboard
-                </button>
-            </form>
         </div>
-    </div>
 
-    <!-- FULL ADMIN DASHBOARD MODAL / SCREEN -->
-    <div id="adminDashboardModal" class="fixed inset-0 bg-white hidden z-50 overflow-y-auto">
-        <header class="bg-gray-900 text-white sticky top-0 z-10">
-            <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-                <div class="flex items-center space-x-3">
-                    <div class="bg-red-600 text-white font-bold text-sm px-2.5 py-1 rounded">ETC</div>
-                    <h2 class="font-bold text-lg">Admin Dashboard — Student Test Submissions</h2>
-                </div>
-                <div class="flex items-center space-x-3">
-                    <button onclick="exportToCSV()" class="px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
-                        <i class="fa-solid fa-file-excel"></i> Export to Excel / CSV
-                    </button>
-                    <button onclick="closeAdminDashboard()" class="px-3.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-xs font-semibold transition">
-                        Close Dashboard
-                    </button>
+        <!-- SCREEN 3: RESULTS & REPORT -->
+        <div id="screenResults" class="screen">
+            <div class="card result-card">
+                <h2>Test Completed / اكتمل الاختبار</h2>
+                <p style="color: var(--text-muted); margin-top: 0.5rem;">Based on your answers, your calculated English proficiency level is:</p>
+                <div id="finalLevelDisplay" class="level-badge">A1</div>
+                <p id="savingStatus" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">Syncing results with database...</p>
+
+                <div class="report-breakdown" id="studentReportBreakdown">
+                    <!-- Breakdown injected dynamically -->
                 </div>
             </div>
-        </header>
+        </div>
 
-        <main class="max-w-7xl mx-auto px-6 py-8 space-y-6">
-            <!-- Analytics Summary Badges -->
-            <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
-                <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl text-center">
-                    <span class="text-xs text-gray-500 font-semibold uppercase">Total Tested</span>
-                    <p class="text-2xl font-black text-gray-900 mt-1" id="statTotal">0</p>
+        <!-- SCREEN 4: ADMIN DASHBOARD -->
+        <div id="screenAdmin" class="screen">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
+                    <h2>Admin Dashboard</h2>
+                    <button class="btn btn-outline" onclick="logoutAdmin()">Logout</button>
                 </div>
-                <div class="bg-red-50 border border-red-100 p-4 rounded-xl text-center">
-                    <span class="text-xs text-red-600 font-semibold uppercase">Level A1</span>
-                    <p class="text-2xl font-black text-red-700 mt-1" id="statA1">0</p>
-                </div>
-                <div class="bg-orange-50 border border-orange-100 p-4 rounded-xl text-center">
-                    <span class="text-xs text-orange-600 font-semibold uppercase">Level A2</span>
-                    <p class="text-2xl font-black text-orange-700 mt-1" id="statA2">0</p>
-                </div>
-                <div class="bg-yellow-50 border border-yellow-100 p-4 rounded-xl text-center">
-                    <span class="text-xs text-yellow-600 font-semibold uppercase">Level B1</span>
-                    <p class="text-2xl font-black text-yellow-700 mt-1" id="statB1">0</p>
-                </div>
-                <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl text-center">
-                    <span class="text-xs text-blue-600 font-semibold uppercase">Level B2</span>
-                    <p class="text-2xl font-black text-blue-700 mt-1" id="statB2">0</p>
-                </div>
-                <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl text-center">
-                    <span class="text-xs text-emerald-600 font-semibold uppercase">Level C1</span>
-                    <p class="text-2xl font-black text-emerald-700 mt-1" id="statC1">0</p>
-                </div>
-            </div>
 
-            <!-- Controls: Search & Filter -->
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                <div class="relative w-full md:w-80">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-gray-400 text-xs"></i>
-                    <input type="text" id="adminSearchInput" oninput="renderAdminTable()" placeholder="Search by student name or phone..." class="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-red-500 outline-none">
+                <div class="admin-controls">
+                    <input type="text" id="adminSearch" class="search-box text-input-field" placeholder="Search by student name or phone number..." oninput="renderAdminTable()">
+                    <button class="btn" onclick="exportToExcel()">📥 Export to Excel</button>
                 </div>
-                <div class="text-xs text-gray-500 font-medium">
-                    Showing <span id="adminRecordCount">0</span> submissions
-                </div>
-            </div>
 
-            <!-- Table -->
-            <div class="border border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-xs">
+                <div class="table-responsive">
+                    <table>
                         <thead>
-                            <tr class="bg-gray-100 text-gray-700 uppercase font-bold tracking-wider border-b border-gray-200">
-                                <th class="p-3.5">Date & Time</th>
-                                <th class="p-3.5">Student Name</th>
-                                <th class="p-3.5">Phone Number</th>
-                                <th class="p-3.5">Final Level</th>
-                                <th class="p-3.5">Section Scores</th>
-                                <th class="p-3.5 text-right">Actions</th>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Student Name</th>
+                                <th>Phone</th>
+                                <th>Assigned Level</th>
+                                <th>Score Summary</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="adminTableBody" class="divide-y divide-gray-200">
-                            <!-- Dynamic Table Rows -->
+                        <tbody id="adminTableBody">
+                            <!-- Injected dynamically -->
                         </tbody>
                     </table>
                 </div>
             </div>
-        </main>
-    </div>
+        </div>
+    </main>
 
-    <!-- STUDENT REPORT VIEW MODAL FOR ADMIN -->
-    <div id="adminReportModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-gray-200 overflow-hidden">
-            <div class="bg-gray-900 text-white p-5 flex justify-between items-center">
-                <div>
-                    <h3 class="font-bold text-base" id="modalStudentTitle">Student Submission Report</h3>
-                    <p class="text-xs text-gray-400" id="modalStudentSubtitle">Detailed Answer Audit</p>
-                </div>
-                <button onclick="closeAdminReportModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div id="adminReportModalContent" class="p-6 overflow-y-auto space-y-6 flex-grow">
-                <!-- Dynamic injected detailed breakdown -->
-            </div>
-            <div class="p-4 border-t border-gray-200 bg-gray-50 text-right">
-                <button onclick="closeAdminReportModal()" class="px-5 py-2 bg-gray-900 text-white text-xs font-semibold rounded-lg">Close</button>
-            </div>
+    <!-- ADMIN MODAL BREAKDOWN -->
+    <div id="adminModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeAdminModal()">&times;</button>
+            <div id="modalBody"></div>
         </div>
     </div>
 
-    <!-- FIREBASE INITIALIZATION SCRIPT -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'etc-placement-app';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "dummy-api-key",
-            authDomain: "etc-placement.firebaseapp.com",
-            projectId: "etc-placement",
-            storageBucket: "etc-placement.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abcdef"
-        };
-
-        let app, db, auth;
-        let dbSubmissionsList = [];
-
-        try {
-            app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
-
-            // Authenticate first
-            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                await signInWithCustomToken(auth, __initial_auth_token);
-            } else {
-                await signInAnonymously(auth);
-            }
-
-            // Real-time listener for submissions from Firestore
-            const submissionsCol = collection(db, 'artifacts', appId, 'public', 'data', 'placement_submissions');
-            onSnapshot(submissionsCol, (snapshot) => {
-                dbSubmissionsList = [];
-                snapshot.forEach(doc => {
-                    dbSubmissionsList.push({ id: doc.id, ...doc.data() });
-                });
-                window.remoteSubmissions = dbSubmissionsList;
-                if (typeof window.renderAdminTable === 'function') {
-                    window.renderAdminTable();
-                }
-            }, (error) => {
-                console.warn("Firestore listener error, fallback to local storage:", error);
-            });
-        } catch (err) {
-            console.warn("Firebase failed to initialize, using local persistent fallback:", err);
-        }
-
-        // Global DB Save Helper
-        window.saveSubmissionToFirestore = async function(record) {
-            try {
-                if (db && auth.currentUser) {
-                    const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'placement_submissions');
-                    await addDoc(colRef, record);
-                }
-            } catch (err) {
-                console.error("Error saving submission to Firestore:", err);
-            }
-        };
-    </script>
-
-    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // ==========================================
-        // QUESTION BANK & ANSWER EVALUATION ENGINE
-        // ==========================================
-        const QUESTIONS_DATA = {
-            "A1": {
-                levelName: "Elementary: A1",
-                threshold: 20,
-                maxScore: 30,
-                nextLevel: "A2",
-                questions: [
-                    // Section 1: Choose correct answer (5)
-                    { id: "a1_mc1", type: "mc", text: "John's an accountant. He ……. a laptop.", options: ["is got", "has got", "have got"], correct: "has got" },
-                    { id: "a1_mc2", type: "mc", text: "They ___ football every weekend.", options: ["play", "plays", "playing"], correct: "play" },
-                    { id: "a1_mc3", type: "mc", text: "___ you from Italy?", options: ["Is", "Are", "Am"], correct: "Are" },
-                    { id: "a1_mc4", type: "mc", text: "My father ___ coffee in the morning.", options: ["drink", "drinking", "drinks"], correct: "drinks" },
-                    { id: "a1_mc5", type: "mc", text: "We go to school ___ bus.", options: ["in", "by", "at"], correct: "by" },
+        const API_URL = "https://sheetdb.io/api/v1/wm3i84zc3m8s2";
+        const ADMIN_PASS = "etc2005";
 
-                    // Section 2: Fill in Gaps (5)
-                    { id: "a1_gap1", type: "text", text: "I have got ___ money in my pocket. (the / some / any / a / an / much / many)", correctAnswers: ["some"] },
-                    { id: "a1_gap2", type: "text", text: "How ___ sisters have you got. (the / some / any / a / an / much / many)", correctAnswers: ["many"] },
-                    { id: "a1_gap3", type: "text", text: "We need to find ___ worker for the job. (the / some / any / a / an / much / many)", correctAnswers: ["a"] },
-                    { id: "a1_gap4", type: "text", text: "There isn't ___ cheese in the fridge. (the / some / any / a / an / much / many)", correctAnswers: ["any"] },
-                    { id: "a1_gap5", type: "text", text: "There's ___ apple on the table. (the / some / any / a / an / much / many)", correctAnswers: ["an"] },
+        // State Variables
+        let studentData = { name: "", phone: "" };
+        let timerInterval = null;
+        let timeRemaining = 30 * 60; // 30 mins
+        let currentLevelIndex = 0; // 0: A1, 1: A2, 2: B1, 3: B2, 4: C1
+        let sectionScores = {};
+        let userAnswers = {}; // { levelId: { qId: answer } }
+        let finalAssignedLevel = "";
+        let adminSubmissions = [];
 
-                    // Section 3: Correct underlined mistake (5)
-                    { id: "a1_err1", type: "text", text: "Correct the underlined mistake: He <u>are</u> my friend.", correctAnswers: ["is"] },
-                    { id: "a1_err2", type: "text", text: "Correct the underlined mistake: They <u>goes</u> to school every day.", correctAnswers: ["go"] },
-                    { id: "a1_err3", type: "text", text: "Correct the underlined mistake: I <u>is</u> happy today.", correctAnswers: ["am"] },
-                    { id: "a1_err4", type: "text", text: "Correct the underlined mistake: She <u>play</u> tennis on Saturdays.", correctAnswers: ["plays"] },
-                    { id: "a1_err5", type: "text", text: "Correct the underlined mistake: We <u>am</u> tired.", correctAnswers: ["are"] },
-
-                    // Section 4: Change verb in brackets (5)
-                    { id: "a1_vb1", type: "text", text: "She (go) ___ to school by bus.", correctAnswers: ["goes"] },
-                    { id: "a1_vb2", type: "text", text: "They (watch) ___ TV at night.", correctAnswers: ["watch"] },
-                    { id: "a1_vb3", type: "text", text: "I (be) ___ fine today.", correctAnswers: ["am", "'m"] },
-                    { id: "a1_vb4", type: "text", text: "My father (drive) ___ a Mercedes.", correctAnswers: ["drives"] },
-                    { id: "a1_vb5", type: "text", text: "We (play) ___ football after school.", correctAnswers: ["play"] },
-
-                    // Section 5: Vocabulary (5)
-                    { id: "a1_voc1", type: "mc", text: "A doctor works in a ___.", options: ["school", "hospital", "supermarket"], correct: "hospital" },
-                    { id: "a1_voc2", type: "mc", text: "We use a ___ to call people.", options: ["phone", "chair", "window"], correct: "phone" },
-                    { id: "a1_voc3", type: "mc", text: "My father's brother is my ___.", options: ["cousin", "uncle", "nephew"], correct: "uncle" },
-                    { id: "a1_voc4", type: "mc", text: "I eat breakfast in the ___.", options: ["morning", "night", "afternoon"], correct: "morning" },
-                    { id: "a1_voc5", type: "mc", text: "Which word is a color?", options: ["Apple", "Blue", "Table"], correct: "Blue" },
-
-                    // Section 6: Everyday English (5)
-                    { id: "a1_ee1", type: "mc", text: "“How are you?”", options: ["I'm fine, thanks.", "I'm ten years old.", "It's Monday."], correct: "I'm fine, thanks." },
-                    { id: "a1_ee2", type: "mc", text: "“What's your name?”", options: ["I'm from Spain.", "My name is Carla.", "I'm a student."], correct: "My name is Carla." },
-                    { id: "a1_ee3", type: "mc", text: "___ old are you?", options: ["What", "Who", "How"], correct: "How" },
-                    { id: "a1_ee4", type: "mc", text: "Can you help me, please?", options: ["Yes, of course.", "Thank you.", "Good night."], correct: "Yes, of course." },
-                    { id: "a1_ee5", type: "mc", text: "“See you tomorrow!”", options: ["Thank you.", "Excuse me", "See you!"], correct: "See you!" }
+        // Question Bank Definition
+        const levels = [
+            {
+                id: "A1",
+                name: "Elementary: A1",
+                passingScore: 20,
+                failLevel: "A1",
+                parts: [
+                    {
+                        title: "Choose the correct answer (1 mark each)",
+                        questions: [
+                            { id: "a1_c1", text: "John’s an accountant. He…….a laptop.", options: ["a) is got", "b) has got", "c) have got"], answer: "b) has got" },
+                            { id: "a1_c2", text: "They ___ football every weekend.", options: ["a) play", "b) plays", "c) playing"], answer: "a) play" },
+                            { id: "a1_c3", text: "___ you from Italy?", options: ["a) Is", "b) Are", "c) Am"], answer: "b) Are" },
+                            { id: "a1_c4", text: "My father ___ coffee in the morning.", options: ["a) drink", "b) drinking", "c) drinks"], answer: "c) drinks" },
+                            { id: "a1_c5", text: "We go to school ___ bus.", options: ["a) in", "b) by", "c) at"], answer: "b) by" }
+                        ]
+                    },
+                    {
+                        title: "Fill in the Gaps (the / some / any / a / an / much / many) (1 mark each)",
+                        questions: [
+                            { id: "a1_f1", text: "I have got ……… money in my pocket.", type: "text", answer: "some" },
+                            { id: "a1_f2", text: "How …….. sisters have you got.", type: "text", answer: "many" },
+                            { id: "a1_f3", text: "We need to find ……… worker for the job.", type: "text", answer: "a" },
+                            { id: "a1_f4", text: "There isn’t ……. cheese in the fridge.", type: "text", answer: "any" },
+                            { id: "a1_f5", text: "There’s ….. apple on the table.", type: "text", answer: "an" }
+                        ]
+                    },
+                    {
+                        title: "Correct the underlined Mistake (1 mark each)",
+                        questions: [
+                            { id: "a1_m1", text: "He <u>are</u> my friend.", type: "text", answer: "is" },
+                            { id: "a1_m2", text: "They <u>goes</u> to school every day.", type: "text", answer: "go" },
+                            { id: "a1_m3", text: "I <u>is</u> happy today.", type: "text", answer: "am" },
+                            { id: "a1_m4", text: "She <u>play</u> tennis on Saturdays.", type: "text", answer: "plays" },
+                            { id: "a1_m5", text: "We <u>am</u> tired.", type: "text", answer: "are" }
+                        ]
+                    },
+                    {
+                        title: "Change the verb in brackets to the correct form (1 mark each)",
+                        questions: [
+                            { id: "a1_v1", text: "She (go) ………………. to school by bus.", type: "text", answer: "goes" },
+                            { id: "a1_v2", text: "They (watch) ………………. TV at night.", type: "text", answer: "watch" },
+                            { id: "a1_v3", text: "I (be) ………………. fine today.", type: "text", answer: "am" },
+                            { id: "a1_v4", text: "My father (drive) ……………….a Mercedes.", type: "text", answer: "drives" },
+                            { id: "a1_v5", text: "We (play) ……………….football after school.", type: "text", answer: "play" }
+                        ]
+                    },
+                    {
+                        title: "Vocabulary (1 mark each)",
+                        questions: [
+                            { id: "a1_voc1", text: "A doctor works in a ___.", options: ["a) school", "b) hospital", "c) supermarket"], answer: "b) hospital" },
+                            { id: "a1_voc2", text: "We use a ___ to call people.", options: ["a) phone", "b) chair", "c) window"], answer: "a) phone" },
+                            { id: "a1_voc3", text: "My father’s brother is my ___.", options: ["a) cousin", "b) uncle", "c) nephew"], answer: "b) uncle" },
+                            { id: "a1_voc4", text: "I eat breakfast in the ___.", options: ["a) morning", "b) night", "c) afternoon"], answer: "a) morning" },
+                            { id: "a1_voc5", text: "Which word is a color?", options: ["a) Apple", "b) Blue", "c) Table"], answer: "b) Blue" }
+                        ]
+                    },
+                    {
+                        title: "Questions and Everyday English (1 mark each)",
+                        questions: [
+                            { id: "a1_ee1", text: "“How are you?”", options: ["a) I’m fine, thanks.", "b) I’m ten years old.", "c) It’s Monday."], answer: "a) I’m fine, thanks." },
+                            { id: "a1_ee2", text: "“What’s your name?”", options: ["a) I’m from Spain.", "b) My name is Carla.", "c) I’m a student."], answer: "b) My name is Carla." },
+                            { id: "a1_ee3", text: "___ old are you?", options: ["a) What", "b) Who", "c) How"], answer: "c) How" },
+                            { id: "a1_ee4", text: "Can you help me, please?", options: ["a) Yes, of course.", "b) Thank you.", "c) Good night."], answer: "a) Yes, of course." },
+                            { id: "a1_ee5", text: "“See you tomorrow!”", options: ["a) Thank you.", "b) Excuse me", "c) See you!"], answer: "c) See you!" }
+                        ]
+                    }
                 ]
             },
-
-            "A2": {
-                levelName: "Pre-Intermediate: A2",
-                threshold: 22,
-                maxScore: 30,
-                nextLevel: "B1",
-                questions: [
-                    // Section 1: Choose Correct Answer (10)
-                    { id: "a2_mc1", type: "mc", text: "My sister ___ to work every day.", options: ["go", "goes", "going", "went"], correct: "goes" },
-                    { id: "a2_mc2", type: "mc", text: "They ___ football now.", options: ["play", "plays", "are playing", "played"], correct: "are playing" },
-                    { id: "a2_mc3", type: "mc", text: "We have lunch ___ 1:00 p.m.", options: ["in", "on", "at", "by"], correct: "at" },
-                    { id: "a2_mc4", type: "mc", text: "I was born ___ May.", options: ["in", "on", "at", "from"], correct: "in" },
-                    { id: "a2_mc5", type: "mc", text: "A car is ___ than a bicycle.", options: ["fast", "faster", "fastest", "more fast"], correct: "faster" },
-                    { id: "a2_mc6", type: "mc", text: "This is the ___ restaurant in town.", options: ["good", "better", "best", "more good"], correct: "best" },
-                    { id: "a2_mc7", type: "mc", text: "We ___ to the cinema last night.", options: ["go", "goes", "went", "going"], correct: "went" },
-                    { id: "a2_mc8", type: "mc", text: "She ___ her homework yesterday.", options: ["finish", "finished", "finishing", "finishes"], correct: "finished" },
-                    { id: "a2_mc9", type: "mc", text: "I ___ my keys. I can't find them.", options: ["lost", "lose", "have lost", "losing"], correct: "have lost" },
-                    { id: "a2_mc10", type: "mc", text: "They ___ to Italy three times.", options: ["went", "have been", "are going", "go"], correct: "have been" },
-
-                    // Section 2: Choose Correct word (5)
-                    { id: "a2_voc1", type: "mc", text: "A ___ works in a restaurant.", options: ["doctor", "teacher", "driver", "chef"], correct: "chef" },
-                    { id: "a2_voc2", type: "mc", text: "We use a ___ to take photos.", options: ["camera", "pillow", "spoon", "key"], correct: "camera" },
-                    { id: "a2_voc3", type: "mc", text: "A bird that lays eggs we eat ___.", options: ["hen", "parrots", "bat", "penguin"], correct: "hen" },
-                    { id: "a2_voc4", type: "mc", text: "An illness in the chest ___.", options: ["jog", "cough", "log", "rough"], correct: "cough" },
-                    { id: "a2_voc5", type: "mc", text: "Click on this ___ to print.", options: ["upgrade", "save", "icon", "processor"], correct: "icon" },
-
-                    // Section 3: Everyday English (6)
-                    { id: "a2_ee1", type: "mc", text: "“Where are you from?”", options: ["I'm a student.", "I'm from Egypt.", "I'm 20 years old.", "I'm happy."], correct: "I'm from Egypt." },
-                    { id: "a2_ee2", type: "mc", text: "“How do you do?”", options: ["I'm fine, thanks.", "See you later.", "How do you do?", "Good night."], correct: "How do you do?" },
-                    { id: "a2_ee3", type: "mc", text: "“Thank you very much.”", options: ["Excuse me.", "You're welcome.", "I'm sorry.", "Hello."], correct: "You're welcome." },
-                    { id: "a2_ee4", type: "mc", text: "“What time is it?”", options: ["It's sunny.", "It's Tuesday.", "It's 4:15.", "It's mine."], correct: "It's 4:15." },
-                    { id: "a2_ee5", type: "mc", text: "“Can I open the window?”", options: ["Yes, you can.", "I'm opening it.", "Open the door.", "At the window."], correct: "Yes, you can." },
-                    { id: "a2_ee6", type: "mc", text: "“___, I'm looking for doctor John's office.”", options: ["Help me", "Excuse me", "show me", "correct me"], correct: "Excuse me" },
-
-                    // Section 4: Complete Sentences (4)
-                    { id: "a2_cmp1", type: "text", text: "She usually ___ tea in the morning.", correctAnswers: ["drinks", "has", "takes"] },
-                    { id: "a2_cmp2", type: "text", text: "They are ___ TV now.", correctAnswers: ["watching"] },
-                    { id: "a2_cmp3", type: "text", text: "We went to the beach ___ Sunday.", correctAnswers: ["on", "last"] },
-                    { id: "a2_cmp4", type: "text", text: "My bag is ___ than yours.", correctAnswers: ["bigger", "larger", "heavier", "better", "faster", "more expensive"] },
-
-                    // Section 5: Correct the underlined mistake (5)
-                    { id: "a2_err1", type: "text", text: "A rhinoceros is <u>more slow</u> than a man.", correctAnswers: ["slower"] },
-                    { id: "a2_err2", type: "text", text: "At 4.00 o'clock he <u>is starting</u> with the vegetables.", correctAnswers: ["starts"] },
-                    { id: "a2_err3", type: "text", text: "Julie is tired. She <u>works</u> for 5 hours.", correctAnswers: ["has been working", "has worked"] },
-                    { id: "a2_err4", type: "text", text: "In 1845, 24,000 people <u>live</u> in Hong Kong.", correctAnswers: ["lived"] },
-                    { id: "a2_err5", type: "text", text: "I'll see you <u>on tomorrow</u>.", correctAnswers: ["tomorrow"] }
+            {
+                id: "A2",
+                name: "Pre-intermediate: A2",
+                passingScore: 22,
+                failLevel: "A2",
+                parts: [
+                    {
+                        title: "Choose the Correct Answer (1 mark each)",
+                        questions: [
+                            { id: "a2_c1", text: "My sister _ to work every day.", options: ["a) go", "b) goes", "c) going", "d) went"], answer: "b) goes" },
+                            { id: "a2_c2", text: "They_ football now.", options: ["a) play", "b) plays", "c) are playing", "d) played"], answer: "c) are playing" },
+                            { id: "a2_c3", text: "We have lunch _ 1:00 p.m.", options: ["a) in", "b) on", "c) at", "d) by"], answer: "c) at" },
+                            { id: "a2_c4", text: "I was born _ May.", options: ["a) in", "b) on", "c) at", "d) from"], answer: "a) in" },
+                            { id: "a2_c5", text: "A car is _ than a bicycle.", options: ["a) fast", "b) faster", "c) fastest", "d) more fast"], answer: "b) faster" },
+                            { id: "a2_c6", text: "This is the _ restaurant in town.", options: ["a) good", "b) better", "c) best", "d) more good"], answer: "c) best" },
+                            { id: "a2_c7", text: "We_ to the cinema last night.", options: ["a) go", "b) goes", "c) went", "d) going"], answer: "c) went" },
+                            { id: "a2_c8", text: "She_ her homework yesterday.", options: ["a) finish", "b) finished", "c) finishing", "d) finishes"], answer: "b) finished" },
+                            { id: "a2_c9", text: "I_ my keys. I can’t find them.", options: ["a) lost", "b) lose", "c) have lost", "d) losing"], answer: "c) have lost" },
+                            { id: "a2_c10", text: "They_ to Italy three times.", options: ["a) went", "b) have been", "c) are going", "d) go"], answer: "b) have been" }
+                        ]
+                    },
+                    {
+                        title: "Choose the Correct word (1 mark each)",
+                        questions: [
+                            { id: "a2_w1", text: "A_ works in a restaurant.", options: ["a) doctor", "b) teacher", "c) driver", "d) chief"], answer: "d) chief" },
+                            { id: "a2_w2", text: "We use a _ to take photos.", options: ["a) camera", "b) pillow", "c) spoon", "d) key"], answer: "a) camera" },
+                            { id: "a2_w3", text: "A bird that lays eggs we eat …….", options: ["a) hen", "b) parrots", "c) bat", "d) penguin"], answer: "a) hen" },
+                            { id: "a2_w4", text: "An illness in the chest", options: ["a) jog", "b) cough", "c) log", "d) rough"], answer: "b) cough" },
+                            { id: "a2_w5", text: "Click on this …………. to print.", options: ["a) upgrade", "b) save", "c) icon", "d) processor"], answer: "c) icon" }
+                        ]
+                    },
+                    {
+                        title: "Everyday English — Choose the Correct Answer (1 mark each)",
+                        questions: [
+                            { id: "a2_ee1", text: "“Where are you from?”", options: ["a) I’m a student.", "b) I’m from Egypt.", "c) I’m 20 years old.", "d) I’m happy."], answer: "b) I’m from Egypt." },
+                            { id: "a2_ee2", text: "“How do you do?”", options: ["a) I’m fine, thanks.", "b) See you later.", "c) How do you do?", "d) Good night."], answer: "c) How do you do?" },
+                            { id: "a2_ee3", text: "“Thank you very much.”", options: ["a) Excuse me.", "b) You’re welcome.", "c) I’m sorry.", "d) Hello."], answer: "b) You’re welcome." },
+                            { id: "a2_ee4", text: "“What time is it?”", options: ["a) It’s sunny.", "b) It’s Tuesday.", "c) It’s 4:15.", "d) It’s mine."], answer: "c) It’s 4:15." },
+                            { id: "a2_ee5", text: "“Can I open the window?”", options: ["a) Yes, you can.", "b) I’m opening it.", "c) Open the door.", "d) At the window."], answer: "a) Yes, you can." },
+                            { id: "a2_ee6", text: "“……………., I’m looking for doctor John’s office.”", options: ["a) Help me", "b) Excuse me", "c) show me", "d) correct me"], answer: "b) Excuse me" }
+                        ]
+                    },
+                    {
+                        title: "Complete the Sentences (1 mark each)",
+                        questions: [
+                            { id: "a2_cs1", text: "She usually ……………… tea in the morning.", type: "text", answer: "drinks" },
+                            { id: "a2_cs2", text: "They are ……………… TV now.", type: "text", answer: "watching" },
+                            { id: "a2_cs3", text: "We went to the beach ……………… Sunday.", type: "text", answer: "on" },
+                            { id: "a2_cs4", text: "My bag is ………………than yours.", type: "text", answer: "bigger" }
+                        ]
+                    },
+                    {
+                        title: "Correct the underlined mistake (1 mark each)",
+                        questions: [
+                            { id: "a2_cm1", text: "A rhinoceros is <u>more slow</u> than a man.", type: "text", answer: "slower" },
+                            { id: "a2_cm2", text: "At 4.00 o’clock he <u>is starting</u> with the vegetables.", type: "text", answer: "starts" },
+                            { id: "a2_cm3", text: "Julie is tired. She <u>works</u> for 5 hours.", type: "text", answer: "has been working" },
+                            { id: "a2_cm4", text: "In 1845, 24,000 people <u>live</u> in Hong Kong.", type: "text", answer: "lived" },
+                            { id: "a2_cm5", text: "I’ll see you <u>on tomorrow</u>.", type: "text", answer: "tomorrow" }
+                        ]
+                    }
                 ]
             },
-
-            "B1": {
-                levelName: "Intermediate: B1",
-                threshold: 25,
-                maxScore: 30,
-                nextLevel: "B2",
-                questions: [
-                    // Section 1: Choose Correct Answer (10)
-                    { id: "b1_mc1", type: "mc", text: "The classroom ___ every day after school.", options: ["cleans", "is cleaned", "cleaned", "cleaning"], correct: "is cleaned" },
-                    { id: "b1_mc2", type: "mc", text: "I think it ___ be cold tomorrow.", options: ["will", "going to", "is", "was"], correct: "will" },
-                    { id: "b1_mc3", type: "mc", text: "Look at those clouds! It ___ rain soon.", options: ["will", "is going to", "went to", "going"], correct: "is going to" },
-                    { id: "b1_mc4", type: "mc", text: "You're coming to the meeting, ___?", options: ["are you", "don't you", "aren't you", "won't you"], correct: "aren't you" },
-                    { id: "b1_mc5", type: "mc", text: "The woman ___ works at the bank is very kind.", options: ["which", "who", "where", "whose"], correct: "who" },
-                    { id: "b1_mc6", type: "mc", text: "My sister is ___ friendly ___ my mother.", options: ["as / as", "so / than", "more / as", "as / than"], correct: "as / as" },
-                    { id: "b1_mc7", type: "mc", text: "If I study hard, I ___ the exam.", options: ["passes", "passed", "will pass", "passing"], correct: "will pass" },
-                    { id: "b1_mc8", type: "mc", text: "If people recycle more, the environment ___ cleaner.", options: ["becomes", "became", "will becoming", "becoming"], correct: "becomes" },
-                    { id: "b1_mc9", type: "mc", text: "This is the book ___ I borrowed from the library.", options: ["who", "where", "which", "whose"], correct: "which" },
-                    { id: "b1_mc10", type: "mc", text: "English ___ in many countries around the world.", options: ["speaks", "is spoken", "spoke", "speaking"], correct: "is spoken" },
-
-                    // Section 2: Vocabulary (5)
-                    { id: "b1_voc1", type: "mc", text: "A person who designs buildings is an ___.", options: ["engineer", "architect", "accountant", "electrician"], correct: "architect" },
-                    { id: "b1_voc2", type: "mc", text: "The opposite of “generous” is ___.", options: ["honest", "selfish", "polite", "friendly"], correct: "selfish" },
-                    { id: "b1_voc3", type: "mc", text: "If you feel exhausted, you should ___.", options: ["rest", "argue", "borrow", "shout"], correct: "rest" },
-                    { id: "b1_voc4", type: "mc", text: "We usually ___ a hotel before traveling.", options: ["repair", "reserve", "invent", "pollute"], correct: "reserve" },
-                    { id: "b1_voc5", type: "mc", text: "My teacher gave me useful ___.", options: ["advice", "luggage", "furniture", "equipment"], correct: "advice" },
-
-                    // Section 3: Everyday English (5)
-                    { id: "b1_ee1", type: "mc", text: "“Would you like something to drink?”", options: ["Yes, please.", "I drank yesterday.", "At the café.", "It's expensive."], correct: "Yes, please." },
-                    { id: "b1_ee2", type: "mc", text: "“I'm sorry for breaking your phone.”", options: ["Never mind.", "I'm fine.", "See you later.", "Good idea."], correct: "Never mind." },
-                    { id: "b1_ee3", type: "mc", text: "“Could you help me carry this box?”", options: ["Of course.", "I carried it yesterday.", "It's a big box.", "At home."], correct: "Of course." },
-                    { id: "b1_ee4", type: "mc", text: "“What do you think of the concert?”", options: ["It was amazing.", "I went by bus.", "At eight o'clock.", "In the city."], correct: "It was amazing." },
-                    { id: "b1_ee5", type: "mc", text: "“How often do you go to the gym?”", options: ["For two hours.", "Three times a week.", "At the sports center.", "Last Monday."], correct: "Three times a week." },
-
-                    // Section 4: Complete Sentences (5)
-                    { id: "b1_cmp1", type: "text", text: "The homework was ___ by the students yesterday.", correctAnswers: ["done", "completed", "submitted", "written", "finished"] },
-                    { id: "b1_cmp2", type: "text", text: "We are going ___ visit our grandparents this weekend.", correctAnswers: ["to"] },
-                    { id: "b1_cmp3", type: "text", text: "She is as ___ as her husband.", correctAnswers: ["tall", "smart", "old", "kind", "rich", "busy"] },
-                    { id: "b1_cmp4", type: "text", text: "If I was rich, I ___ buy a big house.", correctAnswers: ["would", "could"] },
-                    { id: "b1_cmp5", type: "text", text: "The man ___ lives next door is a doctor.", correctAnswers: ["who", "that"] },
-
-                    // Section 5: Correct the Mistake (3)
-                    { id: "b1_err1", type: "text", text: "Correct: The windows <u>cleans</u> every morning.", correctAnswers: ["are cleaned"] },
-                    { id: "b1_err2", type: "text", text: "Correct: She is going <u>visit</u> her cousin tomorrow.", correctAnswers: ["to visit"] },
-                    { id: "b1_err3", type: "text", text: "Correct: My car is as <u>faster</u> as yours.", correctAnswers: ["fast"] },
-
-                    // Section 6: Write Correct Form of Verb (2)
-                    { id: "b1_vb1", type: "text", text: "If I ___ (see) Sarah, I would have told her the news.", correctAnswers: ["had seen"] },
-                    { id: "b1_vb2", type: "text", text: "The new shopping mall ___ (build) last year.", correctAnswers: ["was built"] }
+            {
+                id: "B1",
+                name: "Intermediate: B1",
+                passingScore: 25,
+                failLevel: "B1",
+                parts: [
+                    {
+                        title: "Choose the Correct Answer (1 mark each)",
+                        questions: [
+                            { id: "b1_c1", text: "1. The classroom ______ every day after school.", options: ["a) cleans", "b) is cleaned", "c) cleaned", "d) cleaning"], answer: "b) is cleaned" },
+                            { id: "b1_c2", text: "2. I think it ______ be cold tomorrow.", options: ["a) will", "b) going to", "c) is", "d) was"], answer: "a) will" },
+                            { id: "b1_c3", text: "3. Look at those clouds! It ______ rain soon.", options: ["a) will", "b) is going to", "c) went to", "d) going"], answer: "b) is going to" },
+                            { id: "b1_c4", text: "4. You’re coming to the meeting, ______?", options: ["a) are you", "b) don’t you", "c) aren’t you", "d) won’t you"], answer: "c) aren’t you" },
+                            { id: "b1_c5", text: "5. The woman ___ works at the bank is very kind.", options: ["a) which", "b) who", "c) where", "d) whose"], answer: "b) who" },
+                            { id: "b1_c6", text: "6. My sister is ___ friendly ___ my mother.", options: ["a) as / as", "b) so / than", "c) more / as", "d) as / than"], answer: "a) as / as" },
+                            { id: "b1_c7", text: "7. If I study hard, I ______ the exam.", options: ["a) passes", "b) passed", "c) will pass", "d) passing"], answer: "c) will pass" },
+                            { id: "b1_c8", text: "8. If people recycle more, the environment ____ cleaner.", options: ["a) becomes", "b) became", "c) will becoming", "d) becoming"], answer: "a) becomes" },
+                            { id: "b1_c9", text: "9. This is the book ______ I borrowed from the library.", options: ["a) who", "b) where", "c) which", "d) whose"], answer: "c) which" },
+                            { id: "b1_c10", text: "10. English ______ in many countries around the world.", options: ["a) speaks", "b) is spoken", "c) spoke", "d) speaking"], answer: "b) is spoken" }
+                        ]
+                    },
+                    {
+                        title: "Vocabulary — Choose the Correct Answer (1 mark each)",
+                        questions: [
+                            { id: "b1_v1", text: "A person who designs buildings is an ______ .", options: ["a) engineer", "b) architect", "c) accountant", "d) electrician"], answer: "b) architect" },
+                            { id: "b1_v2", text: "The opposite of “generous” is ______ .", options: ["a) honest", "b) selfish", "c) polite", "d) friendly"], answer: "b) selfish" },
+                            { id: "b1_v3", text: "If you feel exhausted, you should ______.", options: ["a) rest", "b) argue", "c) borrow", "d) shout"], answer: "a) rest" },
+                            { id: "b1_v4", text: "We usually ______ a hotel before traveling.", options: ["a) repair", "b) reserve", "c) invent", "d) pollute"], answer: "b) reserve" },
+                            { id: "b1_v5", text: "My teacher gave me useful ______.", options: ["a) advice", "b) luggage", "c) furniture", "d) equipment"], answer: "a) advice" }
+                        ]
+                    },
+                    {
+                        title: "Everyday English — Choose the Correct Answer (1 mark each)",
+                        questions: [
+                            { id: "b1_ee1", text: "“Would you like something to drink?”", options: ["a) Yes, please.", "b) I drank yesterday.", "c) At the café.", "d) It’s expensive."], answer: "a) Yes, please." },
+                            { id: "b1_ee2", text: "“I’m sorry for breaking your phone.”", options: ["a) Never mind.", "b) I’m fine.", "c) See you later.", "d) Good idea."], answer: "a) Never mind." },
+                            { id: "b1_ee3", text: "“Could you help me carry this box?”", options: ["a) Of course.", "b) I carried it yesterday.", "c) It’s a big box.", "d) At home."], answer: "a) Of course." },
+                            { id: "b1_ee4", text: "“What do you think of the concert?”", options: ["a) It was amazing.", "b) I went by bus.", "c) At eight o’clock.", "d) In the city."], answer: "a) It was amazing." },
+                            { id: "b1_ee5", text: "“How often do you go to the gym?”", options: ["a) For two hours.", "b) Three times a week.", "c) At the sports center.", "d) Last Monday."], answer: "b) Three times a week." }
+                        ]
+                    },
+                    {
+                        title: "Complete the Sentences (1 mark each)",
+                        questions: [
+                            { id: "b1_cs1", text: "The homework was ______ by the students yesterday.", type: "text", answer: "done" },
+                            { id: "b1_cs2", text: "We are going ______ visit our grandparents this weekend.", type: "text", answer: "to" },
+                            { id: "b1_cs3", text: "She is as ______ as her husband.", type: "text", answer: "tall" },
+                            { id: "b1_cs4", text: "If I was rich, I ______ buy a big house.", type: "text", answer: "would" },
+                            { id: "b1_cs5", text: "The man ______ lives next door is a doctor.", type: "text", answer: "who" }
+                        ]
+                    },
+                    {
+                        title: "Correct the Mistake (1 mark each)",
+                        questions: [
+                            { id: "b1_cm1", text: "The windows cleans every morning.", type: "text", answer: "are cleaned" },
+                            { id: "b1_cm2", text: "She is going visit her cousin tomorrow.", type: "text", answer: "going to visit" },
+                            { id: "b1_cm3", text: "My car is as faster as yours.", type: "text", answer: "as fast as" }
+                        ]
+                    },
+                    {
+                        title: "Write the Correct Form of the Verb (1 mark each)",
+                        questions: [
+                            { id: "b1_vf1", text: "If I …………. (see) Sarah, I would have told her the news.", type: "text", answer: "had seen" },
+                            { id: "b1_vf2", text: "The new shopping mall ……………. (build) last year.", type: "text", answer: "was built" }
+                        ]
+                    }
                 ]
             },
-
-            "B2": {
-                levelName: "Upper-Intermediate: B2",
-                threshold: 25,
-                maxScore: 30,
-                nextLevel: "C1",
-                questions: [
-                    // Section 1: Choose Correct Answer (5)
-                    { id: "b2_mc1", type: "mc", text: "By the time we arrived, the meeting ___.", options: ["has finished", "had finished", "was finishing", "finishes"], correct: "had finished" },
-                    { id: "b2_mc2", type: "mc", text: "She ___ on the project for hours before her manager called.", options: ["had been working", "has worked", "was worked", "works"], correct: "had been working" },
-                    { id: "b2_mc3", type: "mc", text: "If I ___ more confident, I would apply for the position.", options: ["am", "were", "had been", "will be"], correct: "were" },
-                    { id: "b2_mc4", type: "mc", text: "They ___ the new policy by next month.", options: ["implement", "implemented", "will have implemented", "have implementing"], correct: "will have implemented" },
-                    { id: "b2_mc5", type: "mc", text: "You ___ have informed us earlier; now it's too late.", options: ["should", "mustn't", "can't", "needn't"], correct: "should" },
-
-                    // Section 2: Vocabulary (5)
-                    { id: "b2_voc1", type: "mc", text: "The company is looking for a highly ___ candidate with strong leadership skills.", options: ["hesitant", "competent", "ordinary", "careless"], correct: "competent" },
-                    { id: "b2_voc2", type: "mc", text: "His explanation was so ___ that nobody understood it.", options: ["vague", "efficient", "accurate", "flexible"], correct: "vague" },
-                    { id: "b2_voc3", type: "mc", text: "The government introduced new measures to ___ pollution.", options: ["enhance", "reduce", "convince", "assume"], correct: "reduce" },
-                    { id: "b2_voc4", type: "mc", text: "She was completely ___ by the unexpected news.", options: ["delighted", "exhausted", "astonished", "relieved"], correct: "astonished" },
-                    { id: "b2_voc5", type: "mc", text: "The professor gave a very ___ lecture on artificial intelligence.", options: ["insightful", "temporary", "minor", "narrow"], correct: "insightful" },
-
-                    // Section 3: Everyday English (5)
-                    { id: "b2_ee1", type: "mc", text: "“Would you mind closing the window?”", options: ["Not at all.", "I don't think.", "It doesn't matter.", "Never mind."], correct: "Not at all." },
-                    { id: "b2_ee2", type: "mc", text: "“I'm afraid I can't attend the meeting tomorrow.”", options: ["That sounds great.", "No problem, thanks for letting me know.", "I completely agree.", "You should attend."], correct: "No problem, thanks for letting me know." },
-                    { id: "b2_ee3", type: "mc", text: "“How did your presentation go?”", options: ["It depends.", "I'd rather not.", "It went better than expected.", "That's not necessary."], correct: "It went better than expected." },
-                    { id: "b2_ee4", type: "mc", text: "“Could you possibly give me a hand with this report?”", options: ["Certainly, I'd be happy to help.", "I'm not sure it exists.", "I already finished yesterday.", "It doesn't belong to me."], correct: "Certainly, I'd be happy to help." },
-                    { id: "b2_ee5", type: "mc", text: "“Do you think the interview went well?”", options: ["I'm used to it.", "I have no idea.", "I hope so.", "I can't afford it."], correct: "I hope so." },
-
-                    // Section 4: Complete Sentences (5)
-                    { id: "b2_cmp1", type: "text", text: "I have never ___ such a fascinating documentary before.", correctAnswers: ["seen", "watched"] },
-                    { id: "b2_cmp2", type: "text", text: "By this time tomorrow, we ___ the final decision.", correctAnswers: ["will have made", "will make", "would have made"] },
-                    { id: "b2_cmp3", type: "text", text: "She apologized for ___ so rudely during the discussion.", correctAnswers: ["speaking", "behaving", "acting", "talking"] },
-                    { id: "b2_cmp4", type: "text", text: "If they had prepared better, they ___ the contract.", correctAnswers: ["would have won", "would have signed", "would have got", "would have gotten"] },
-                    { id: "b2_cmp5", type: "text", text: "We were exhausted because we ___ all day.", correctAnswers: ["had been working", "had been walking", "had been running", "had worked"] },
-
-                    // Section 5: Correct the Mistake (5)
-                    { id: "b2_err1", type: "text", text: "Correct: If I <u>would have known</u> about the traffic, I would have left earlier.", correctAnswers: ["had known"] },
-                    { id: "b2_err2", type: "text", text: "Correct: She suggested <u>to go</u> to a different restaurant.", correctAnswers: ["going"] },
-                    { id: "b2_err3", type: "text", text: "Correct: They <u>has been living</u> here since 2018.", correctAnswers: ["have been living"] },
-                    { id: "b2_err4", type: "text", text: "Correct: While I <u>studied</u>, my brother was playing loud music.", correctAnswers: ["was studying"] },
-                    { id: "b2_err5", type: "text", text: "Correct: He <u>said me</u> that the meeting had been canceled.", correctAnswers: ["told me", "said to me"] },
-
-                    // Section 6: Write Correct Form of Verb (5)
-                    { id: "b2_vb1", type: "text", text: "By next year, she (complete) ___ her degree.", correctAnswers: ["will have completed"] },
-                    { id: "b2_vb2", type: "text", text: "I wish I (have) ___ more free time these days.", correctAnswers: ["had"] },
-                    { id: "b2_vb3", type: "text", text: "They (wait) ___ for over an hour before the bus arrived.", correctAnswers: ["had been waiting", "had waited"] },
-                    { id: "b2_vb4", type: "text", text: "If he (listen) ___ to the advice, he wouldn't have been in trouble now.", correctAnswers: ["had listened"] },
-                    { id: "b2_vb5", type: "text", text: "At 8 p.m. yesterday, we (discuss) ___ the new proposal.", correctAnswers: ["were discussing"] }
+            {
+                id: "B2",
+                name: "Upper-Intermediate: B2",
+                passingScore: 25,
+                failLevel: "B2",
+                parts: [
+                    {
+                        title: "Choose the Correct Answer (1 mark each)",
+                        questions: [
+                            { id: "b2_c1", text: "By the time we arrived, the meeting ……………………..", options: ["a) has finished", "b) had finished", "c) was finishing", "d) finishes"], answer: "b) had finished" },
+                            { id: "b2_c2", text: "She …………..… on the project for hours before her manager called.", options: ["a) had been working", "b) has worked", "c) was worked", "d) works"], answer: "a) had been working" },
+                            { id: "b2_c3", text: "If I …………..… more confident, I would apply for the position.", options: ["a) am", "b) were", "c) had been", "d) will be"], answer: "b) were" },
+                            { id: "b2_c4", text: "They ……….. the new policy by next month.", options: ["a) implement", "b) implemented", "c) will have implemented", "d) have implementing"], answer: "c) will have implemented" },
+                            { id: "b2_c5", text: "You ……….. have informed us earlier; now it’s too late.", options: ["a) should", "b) mustn’t", "c) can’t", "d) needn’t"], answer: "a) should" }
+                        ]
+                    },
+                    {
+                        title: "Vocabulary: Choose the Correct Answer (1 mark each)",
+                        questions: [
+                            { id: "b2_v1", text: "The company is looking for a highly ……….candidate with strong leadership skills.", options: ["a) hesitant", "b) competent", "c) ordinary", "d) careless"], answer: "b) competent" },
+                            { id: "b2_v2", text: "His explanation was so ………. that nobody understood it.", options: ["a) vague", "b) efficient", "c) accurate", "d) flexible"], answer: "a) vague" },
+                            { id: "b2_v3", text: "The government introduced new measures to ………. pollution.", options: ["a) enhance", "b) reduce", "c) convince", "d) assume"], answer: "b) reduce" },
+                            { id: "b2_v4", text: "She was completely ………. by the unexpected news.", options: ["a) delighted", "b) exhausted", "c) astonished", "d) relieved"], answer: "c) astonished" },
+                            { id: "b2_v5", text: "The professor gave a very ………. lecture on artificial intelligence.", options: ["a) insightful", "b) temporary", "c) minor", "d) narrow"], answer: "a) insightful" }
+                        ]
+                    },
+                    {
+                        title: "Everyday English Choose the Correct Answer (1 mark each)",
+                        questions: [
+                            { id: "b2_ee1", text: "“Would you mind closing the window?”", options: ["a) Not at all.", "b) I don’t think.", "c) It doesn’t matter.", "d) Never mind."], answer: "a) Not at all." },
+                            { id: "b2_ee2", text: "“I’m afraid I can’t attend the meeting tomorrow.”", options: ["a) That sounds great.", "b) No problem, thanks for letting me know.", "c) I completely agree.", "d) You should attend."], answer: "b) No problem, thanks for letting me know." },
+                            { id: "b2_ee3", text: "“How did your presentation go?”", options: ["a) It depends.", "b) I’d rather not.", "c) It went better than expected.", "d) That’s not necessary."], answer: "c) It went better than expected." },
+                            { id: "b2_ee4", text: "“Could you possibly give me a hand with this report?”", options: ["a) Certainly, I’d be happy to help.", "b) I’m not sure it exists.", "c) I already finished yesterday.", "d) It doesn’t belong to me."], answer: "a) Certainly, I’d be happy to help." },
+                            { id: "b2_ee5", text: "“Do you think the interview went well?”", options: ["a) I’m used to it.", "b) I have no idea.", "c) I hope so.", "d) I can’t afford it."], answer: "c) I hope so." }
+                        ]
+                    },
+                    {
+                        title: "Complete the Sentences (1 mark each)",
+                        questions: [
+                            { id: "b2_cs1", text: "I have never ______________ such a fascinating documentary before.", type: "text", answer: "seen" },
+                            { id: "b2_cs2", text: "By this time tomorrow, we ______________ the final decision.", type: "text", answer: "will have made" },
+                            { id: "b2_cs3", text: "She apologized for ______________ so rudely during the discussion.", type: "text", answer: "behaving" },
+                            { id: "b2_cs4", text: "If they had prepared better, they ______________ the contract.", type: "text", answer: "would have won" },
+                            { id: "b2_cs5", text: "We were exhausted because we ______________ all day.", type: "text", answer: "had been working" }
+                        ]
+                    },
+                    {
+                        title: "Correct the Mistake (1 mark each)",
+                        questions: [
+                            { id: "b2_cm1", text: "If I <u>would have known</u> about the traffic, I would have left earlier.", type: "text", answer: "had known" },
+                            { id: "b2_cm2", text: "She suggested <u>to go</u> to a different restaurant.", type: "text", answer: "going" },
+                            { id: "b2_cm3", text: "They <u>has been living</u> here since 2018.", type: "text", answer: "have been living" },
+                            { id: "b2_cm4", text: "<u>While I studied</u>, my brother was playing loud music.", type: "text", answer: "While I was studying" },
+                            { id: "b2_cm5", text: "He <u>said me</u> that the meeting had been canceled.", type: "text", answer: "told me" }
+                        ]
+                    },
+                    {
+                        title: "Write the Correct Form of the Verb (1 mark each)",
+                        questions: [
+                            { id: "b2_vf1", text: "By next year, she (complete) ______________ her degree.", type: "text", answer: "will have completed" },
+                            { id: "b2_vf2", text: "I wish I (have) ______________ more free time these days.", type: "text", answer: "had" },
+                            { id: "b2_vf3", text: "They (wait) ______________ for over an hour before the bus arrived.", type: "text", answer: "had been waiting" },
+                            { id: "b2_vf4", text: "If he (listen) ______________to the advice, he wouldn’t have been in trouble now.", type: "text", answer: "had listened" },
+                            { id: "b2_vf5", text: "At 8 p.m. yesterday, we (discuss) ______________ the new proposal", type: "text", answer: "were discussing" }
+                        ]
+                    }
                 ]
             },
-
-            "C1": {
-                levelName: "Advanced: C1",
-                threshold: 25,
-                maxScore: 30,
-                nextLevel: null,
-                questions: [
-                    // Section 1: Choose Correct Answer (5)
-                    { id: "c1_mc1", type: "mc", text: "By the time the committee reached a decision, several members ___ the proposal.", options: ["opposed", "had already opposed", "have opposed", "were opposing"], correct: "had already opposed" },
-                    { id: "c1_mc2", type: "mc", text: "She claimed that she ___ informed about the policy changes beforehand.", options: ["has not been", "had not been", "was not being", "would not be"], correct: "had not been" },
-                    { id: "c1_mc3", type: "mc", text: "The new regulations ___ by the board despite considerable opposition.", options: ["were applied", "applied", "have applying", "had applied"], correct: "were applied" },
-                    { id: "c1_mc4", type: "mc", text: "Hardly ___ the presentation when the audience started asking questions.", options: ["he had finished", "had he finished", "he finished", "did he finish"], correct: "had he finished" },
-                    { id: "c1_mc5", type: "mc", text: "It is essential that every applicant ___ the required documentation before Friday.", options: ["submits", "submit", "submitted", "will submit"], correct: "submit" },
-
-                    // Section 2: Vocabulary (5)
-                    { id: "c1_voc1", type: "mc", text: "His argument was so ___ that even the critics were persuaded.", options: ["compelling", "superficial", "reluctant", "obsolete"], correct: "compelling" },
-                    { id: "c1_voc2", type: "mc", text: "The minister attempted to ___ concerns regarding the economic downturn.", options: ["allocate", "alleviate", "abolish", "withdraw"], correct: "alleviate" },
-                    { id: "c1_voc3", type: "mc", text: "Her remarks were considered highly ___ and offended several colleagues.", options: ["insightful", "tactful", "inappropriate", "coherent"], correct: "inappropriate" },
-                    { id: "c1_voc4", type: "mc", text: "The company faced severe ___ after the scandal became public.", options: ["prosperity", "backlash", "admiration", "stability"], correct: "backlash" },
-                    { id: "c1_voc5", type: "mc", text: "The professor's theory remains highly ___ among contemporary researchers.", options: ["influential", "temporary", "irrelevant", "fragile"], correct: "influential" },
-
-                    // Section 3: Everyday English (5)
-                    { id: "c1_ee1", type: "mc", text: "“I'm terribly sorry for the inconvenience.”", options: ["Don't mention it.", "It serves you right.", "I can't put up with it.", "That's out of the question."], correct: "Don't mention it." },
-                    { id: "c1_ee2", type: "mc", text: "“Would you be willing to elaborate on your proposal?”", options: ["Not in the slightest.", "Certainly, I'd be glad to.", "It's beyond me.", "I'd rather you didn't."], correct: "Certainly, I'd be glad to." },
-                    { id: "c1_ee3", type: "mc", text: "“I was wondering if you could possibly extend the deadline.”", options: ["I suppose that could be arranged.", "That's none of my business.", "I'm afraid it's broken.", "You must be joking."], correct: "I suppose that could be arranged." },
-                    { id: "c1_ee4", type: "mc", text: "“The conference was far more productive than I had anticipated.”", options: ["That's quite understandable.", "I couldn't agree more.", "It slipped my mind.", "I'm not convinced by it."], correct: "I couldn't agree more." },
-                    { id: "c1_ee5", type: "mc", text: "“Do you happen to know when the report is due?”", options: ["It's been called off.", "As far as I know, it's due tomorrow.", "I'd rather not mention it.", "That depends on you."], correct: "As far as I know, it's due tomorrow." },
-
-                    // Section 4: Complete Sentences (5)
-                    { id: "c1_cmp1", type: "text", text: "By the time we arrived at the venue, the keynote speaker ___ already left.", correctAnswers: ["had"] },
-                    { id: "c1_cmp2", type: "text", text: "She denied ___ confidential information to the press.", correctAnswers: ["leaking", "disclosing", "revealing", "sharing", "giving"] },
-                    { id: "c1_cmp3", type: "text", text: "The issue should ___ addressed much earlier.", correctAnswers: ["have been"] },
-                    { id: "c1_cmp4", type: "text", text: "He said that he ___ considering resigning for several months.", correctAnswers: ["had been"] },
-                    { id: "c1_cmp5", type: "text", text: "The negotiations broke down because neither side was willing to ___.", correctAnswers: ["compromise", "yield", "concede"] },
-
-                    // Section 5: Correct the Mistake (5)
-                    { id: "c1_err1", type: "text", text: "Correct: She suggested <u>him to apply</u> for the managerial position.", correctAnswers: ["that he apply", "he apply", "applying"] },
-                    { id: "c1_err2", type: "text", text: "Correct: The project <u>has completed</u> ahead of schedule.", correctAnswers: ["has been completed", "was completed"] },
-                    { id: "c1_err3", type: "text", text: "Correct: He asked me <u>where had I been</u> the previous evening.", correctAnswers: ["where I had been"] },
-                    { id: "c1_err4", type: "text", text: "Correct: If the documents <u>were submitted</u> earlier, the application would have been approved immediately.", correctAnswers: ["had been submitted"] },
-                    { id: "c1_err5", type: "text", text: "Correct: Neither the manager nor the employees <u>was</u> aware of the changes.", correctAnswers: ["were"] },
-
-                    // Section 6: Write Correct Form of Verb (5)
-                    { id: "c1_vb1", type: "text", text: "By next June, the research team (conduct) ___ the experiment for over three years.", correctAnswers: ["will have been conducting"] },
-                    { id: "c1_vb2", type: "text", text: "She admitted (misunderstand) ___ the original instructions.", correctAnswers: ["misunderstanding", "having misunderstood"] },
-                    { id: "c1_vb3", type: "text", text: "The proposal (reject) ___ if substantial revisions are not made.", correctAnswers: ["will be rejected"] },
-                    { id: "c1_vb4", type: "text", text: "He claimed that he (inform) ___ about the cancellation before anyone else.", correctAnswers: ["had been informed"] },
-                    { id: "c1_vb5", type: "text", text: "Had the company acted sooner, the crisis (avoid) ___ entirely.", correctAnswers: ["would have been avoided"] }
+            {
+                id: "C1",
+                name: "Advanced: C1",
+                passingScore: 25,
+                failLevel: "C1",
+                passLevel: "Study Skills Success",
+                parts: [
+                    {
+                        title: "Choose the correct answer (1 mark each)",
+                        questions: [
+                            { id: "c1_c1", text: "By the time the committee reached a decision, several members ______________ the proposal.", options: ["a) opposed", "b) had already opposed", "c) have opposed", "d) were opposing"], answer: "b) had already opposed" },
+                            { id: "c1_c2", text: "She claimed that she ______________ informed about the policy changes beforehand.", options: ["a) has not been", "b) had not been", "c) was not being", "d) would not be"], answer: "b) had not been" },
+                            { id: "c1_c3", text: "The new regulations ______________ by the board despite considerable opposition.", options: ["a) were applied", "b) applied", "c) have applying", "d) had applied"], answer: "a) were applied" },
+                            { id: "c1_c4", text: "Hardly ______________ the presentation when the audience started asking questions.", options: ["a) he had finished", "b) had he finished", "c) he finished", "d) did he finish"], answer: "b) had he finished" },
+                            { id: "c1_c5", text: "It is essential that every applicant ______________the required documentation before Friday.", options: ["a) submits", "b) submit", "c) submitted", "d) will submit"], answer: "b) submit" }
+                        ]
+                    },
+                    {
+                        title: "Vocabulary: Choose the correct answer (1 mark each)",
+                        questions: [
+                            { id: "c1_v1", text: "His argument was so _______________ that even the critics were persuaded.", options: ["a) compelling", "b) superficial", "c) reluctant", "d) obsolete"], answer: "a) compelling" },
+                            { id: "c1_v2", text: "The minister attempted to ______________ concerns regarding the economic downturn.", options: ["a) allocate", "b) alleviate", "c) abolish", "d) withdraw"], answer: "b) alleviate" },
+                            { id: "c1_v3", text: "Her remarks were considered highly ______________ and offended several colleagues.", options: ["a) insightful", "b) tactful", "c) inappropriate", "d) coherent"], answer: "c) inappropriate" },
+                            { id: "c1_v4", text: "The company faced severe ______________ after the scandal became public.", options: ["a) prosperity", "b) backlash", "c) admiration", "d) stability"], answer: "b) backlash" },
+                            { id: "c1_v5", text: "The professor’s theory remains highly ______________ among contemporary researchers.", options: ["a) influential", "b) temporary", "c) irrelevant", "d) fragile"], answer: "a) influential" }
+                        ]
+                    },
+                    {
+                        title: "Everyday English: Choose the correct answer (1 mark each)",
+                        questions: [
+                            { id: "c1_ee1", text: "“I’m terribly sorry for the inconvenience.”", options: ["a) Don’t mention it.", "b) It serves you right.", "c) I can’t put up with it.", "d) That’s out of the question."], answer: "a) Don’t mention it." },
+                            { id: "c1_ee2", text: "“Would you be willing to elaborate on your proposal?”", options: ["a) Not in the slightest.", "b) Certainly, I’d be glad to.", "c) It’s beyond me.", "d) I’d rather you didn’t."], answer: "b) Certainly, I’d be glad to." },
+                            { id: "c1_ee3", text: "“I was wondering if you could possibly extend the deadline.”", options: ["a) I suppose that could be arranged.", "b) That’s none of my business.", "c) I’m afraid it’s broken.", "d) You must be joking."], answer: "a) I suppose that could be arranged." },
+                            { id: "c1_ee4", text: "“The conference was far more productive than I had anticipated.”", options: ["a) That’s quite understandable.", "b) I couldn’t agree more.", "c) It slipped my mind.", "d) I’m not convinced by it."], answer: "b) I couldn’t agree more." },
+                            { id: "c1_ee5", text: "“Do you happen to know when the report is due?”", options: ["a) It’s been called off.", "b) As far as I know, it’s due tomorrow.", "c) I’d rather not mention it.", "d) That depends on you."], answer: "b) As far as I know, it’s due tomorrow." }
+                        ]
+                    },
+                    {
+                        title: "Complete the Sentences (1 mark each)",
+                        questions: [
+                            { id: "c1_cs1", text: "By the time we arrived at the venue, the keynote speaker ______________ already left.", type: "text", answer: "had" },
+                            { id: "c1_cs2", text: "She denied ______________ confidential information to the press.", type: "text", answer: "disclosing" },
+                            { id: "c1_cs3", text: "The issue should ______________ addressed much earlier.", type: "text", answer: "have been" },
+                            { id: "c1_cs4", text: "He said that he ______________ considering resigning for several months.", type: "text", answer: "had been" },
+                            { id: "c1_cs5", text: "The negotiations broke down because neither side was willing to ______________", type: "text", answer: "compromise" }
+                        ]
+                    },
+                    {
+                        title: "Correct the Mistake (1 mark each)",
+                        questions: [
+                            { id: "c1_cm1", text: "She suggested <u>him to apply</u> for the managerial position.", type: "text", answer: "that he apply" },
+                            { id: "c1_cm2", text: "The project <u>has completed</u> ahead of schedule.", type: "text", answer: "has been completed" },
+                            { id: "c1_cm3", text: "He asked me where <u>had I been</u> the previous evening.", type: "text", answer: "I had been" },
+                            { id: "c1_cm4", text: "If the documents <u>were submitted</u> earlier, the application would have been approved immediately.", type: "text", answer: "had been submitted" },
+                            { id: "c1_cm5", text: "Neither the manager nor the employees <u>was aware</u> of the changes.", type: "text", answer: "were aware" }
+                        ]
+                    },
+                    {
+                        title: "Write the Correct Form of the Verb (1 mark each)",
+                        questions: [
+                            { id: "c1_vf1", text: "By next June, the research team (conduct) ______________ the experiment for over three years.", type: "text", answer: "will have been conducting" },
+                            { id: "c1_vf2", text: "She admitted (misunderstand) ______________ the original instructions.", type: "text", answer: "having misunderstood" },
+                            { id: "c1_vf3", text: "The proposal (reject) ______________ if substantial revisions are not made.", type: "text", answer: "will be rejected" },
+                            { id: "c1_vf4", text: "He claimed that he (inform) ______________about the cancellation before anyone else.", type: "text", answer: "had been informed" },
+                            { id: "c1_vf5", text: "Had the company acted sooner, the crisis (avoid) ______________entirely.", type: "text", answer: "would have been avoided" }
+                        ]
+                    }
                 ]
             }
-        };
+        ];
 
-        // State Machine Variables
-        let testState = {
-            studentName: '',
-            studentPhone: '',
-            startTime: null,
-            endTime: null,
-            timerInterval: null,
-            timeRemainingSeconds: 30 * 60, // 30 mins
-            currentLevelKey: 'A1',
-            sectionScores: {},
-            detailedAnswers: {},
-            finalLevel: 'A1'
-        };
-
-        // HELPERS FOR ESCAPING HTML
-        function escapeHTML(str) {
-            return String(str).replace(/[&<>"']/g, function(m) {
-                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
-            });
-        }
-        function escapeAttr(str) {
-            return String(str).replace(/"/g, '&quot;');
+        // Screen Navigation
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
         }
 
-        // START TEST HANDLER
-        function handleStartTest(e) {
-            e.preventDefault();
-            const nameInput = document.getElementById('studentName').value.trim();
-            const phoneInput = document.getElementById('studentPhone').value.trim();
-
-            if(!nameInput || !phoneInput) return;
-
-            testState.studentName = nameInput;
-            testState.studentPhone = phoneInput;
-            testState.startTime = new Date();
-
-            // Toggle screens
-            document.getElementById('stepRegistration').classList.add('hidden');
-            document.getElementById('stepTest').classList.remove('hidden');
-            document.getElementById('timerContainer').classList.remove('hidden');
-            document.getElementById('globalProgressBarContainer').classList.remove('hidden');
-
-            startTimer();
-            loadLevelSection('A1');
-        }
-
-        // TIMER ENGINE
+        // Timer Functions
         function startTimer() {
+            document.getElementById('timerBox').style.display = 'flex';
             updateTimerDisplay();
-            testState.timerInterval = setInterval(() => {
-                testState.timeRemainingSeconds--;
+            timerInterval = setInterval(() => {
+                timeRemaining--;
                 updateTimerDisplay();
-
-                if (testState.timeRemainingSeconds <= 0) {
-                    clearInterval(testState.timerInterval);
-                    finishTestAndShowResult();
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Time is up! Your test will now be submitted.");
+                    finishTest();
                 }
             }, 1000);
         }
 
         function updateTimerDisplay() {
-            const mins = Math.floor(testState.timeRemainingSeconds / 60);
-            const secs = testState.timeRemainingSeconds % 60;
-            document.getElementById('timerDisplay').innerText = 
-                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-            
-            const totalSecs = 30 * 60;
-            const elapsedPct = ((totalSecs - testState.timeRemainingSeconds) / totalSecs) * 100;
-            document.getElementById('globalProgressBar').style.width = `${elapsedPct}%`;
+            const mins = Math.floor(timeRemaining / 60);
+            const secs = timeRemaining % 60;
+            const timerStr = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            document.getElementById('timerDisplay').innerText = timerStr;
+            if (timeRemaining <= 300) {
+                document.getElementById('timerBox').classList.add('warning');
+            }
         }
 
-        // LOAD LEVEL SECTION
-        function loadLevelSection(levelKey) {
-            testState.currentLevelKey = levelKey;
-            const levelData = QUESTIONS_DATA[levelKey];
+        // Registration & Start Test
+        function startTest(e) {
+            e.preventDefault();
+            studentData.name = document.getElementById('studentName').value.trim();
+            studentData.phone = document.getElementById('studentPhone').value.trim();
 
-            document.getElementById('sectionTitle').innerText = levelData.levelName;
-            document.getElementById('sectionThreshold').innerText = `${levelData.threshold} / ${levelData.maxScore} Marks`;
+            if (!studentData.name || !studentData.phone) return;
 
-            const container = document.getElementById('questionsContainer');
-            container.innerHTML = '';
+            showScreen('screenTest');
+            startTimer();
+            renderLevelSection(currentLevelIndex);
+        }
 
-            levelData.questions.forEach((q, idx) => {
-                const qCard = document.createElement('div');
-                qCard.className = "bg-white border border-gray-200 rounded-xl p-5 shadow-sm space-y-3";
+        // Render Current Section Questions
+        function renderLevelSection(index) {
+            const levelData = levels[index];
+            const container = document.getElementById('testContainer');
+            let html = `
+                <div class="section-header">
+                    <div class="section-title">${levelData.name}</div>
+                    <div style="font-weight:600; color: var(--text-muted);">Section Total: 30 Marks</div>
+                </div>
+            `;
 
-                let qHTML = `
-                    <div class="flex items-start gap-3">
-                        <span class="bg-gray-100 text-gray-800 text-xs font-bold px-2.5 py-1 rounded-md mt-0.5">Q${idx + 1}</span>
-                        <div class="text-sm font-semibold text-gray-900 leading-relaxed">${q.text}</div>
-                    </div>
+            levelData.parts.forEach((part, pIdx) => {
+                html += `
+                    <div class="part-block">
+                        <div class="part-title">${part.title}</div>
                 `;
 
-                if (q.type === 'mc') {
-                    qHTML += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 pl-8">`;
-                    q.options.forEach((opt, optIdx) => {
-                        const optId = `${q.id}_opt_${optIdx}`;
-                        qHTML += `
-                            <div>
-                                <input type="radio" id="${optId}" name="${q.id}" value="${escapeAttr(opt)}" class="hidden custom-radio">
-                                <label for="${optId}" class="block border border-gray-200 rounded-lg p-3 text-xs font-medium text-gray-700 cursor-pointer hover:bg-gray-50 transition">
-                                    <span class="font-bold mr-1">${String.fromCharCode(97 + optIdx)})</span> ${escapeHTML(opt)}
+                part.questions.forEach((q, qIdx) => {
+                    html += `<div class="question-item">`;
+                    html += `<div class="question-text">${qIdx + 1}. ${q.text}</div>`;
+
+                    if (q.options) {
+                        html += `<div class="options-group">`;
+                        q.options.forEach(opt => {
+                            const optLetter = opt.charAt(0);
+                            html += `
+                                <label class="option-btn">
+                                    <input type="radio" name="q_${q.id}" value="${opt}">
+                                    <span>${opt}</span>
                                 </label>
+                            `;
+                        });
+                        html += `</div>`;
+                    } else {
+                        html += `
+                            <input type="text" id="q_${q.id}" class="text-input-field" placeholder="Type your answer here...">
+                        `;
+                    }
+
+                    html += `</div>`;
+                });
+
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+            window.scrollTo(0, 0);
+        }
+
+        // Save Answers & Calculate Score for Current Section
+        function submitCurrentSection() {
+            const currentLevel = levels[currentLevelIndex];
+            userAnswers[currentLevel.id] = {};
+            let sectionScore = 0;
+
+            currentLevel.parts.forEach(part => {
+                part.questions.forEach(q => {
+                    let userAns = "";
+                    if (q.options) {
+                        const selectedOption = document.querySelector(`input[name="q_${q.id}"]:checked`);
+                        userAns = selectedOption ? selectedOption.value : "";
+                    } else {
+                        const inputField = document.getElementById(`q_${q.id}`);
+                        userAns = inputField ? inputField.value.trim() : "";
+                    }
+
+                    userAnswers[currentLevel.id][q.id] = userAns;
+
+                    // Evaluation
+                    if (q.options) {
+                        if (userAns === q.answer) {
+                            sectionScore++;
+                        }
+                    } else {
+                        // Normalize string for text input checking
+                        const cleanUser = userAns.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+                        const cleanAns = q.answer.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+                        if (cleanUser && cleanAns.includes(cleanUser)) {
+                            sectionScore++;
+                        }
+                    }
+                });
+            });
+
+            sectionScores[currentLevel.id] = sectionScore;
+
+            // Check Progression Logic
+            if (sectionScore >= currentLevel.passingScore) {
+                // Check if last section
+                if (currentLevelIndex < levels.length - 1) {
+                    currentLevelIndex++;
+                    renderLevelSection(currentLevelIndex);
+                } else {
+                    // Passed C1
+                    finalAssignedLevel = currentLevel.passLevel || "C1";
+                    finishTest();
+                }
+            } else {
+                // Failed current level -> Stop test
+                finalAssignedLevel = currentLevel.failLevel;
+                finishTest();
+            }
+        }
+
+        // Finish Test & Save
+        function finishTest() {
+            clearInterval(timerInterval);
+            document.getElementById('timerBox').style.display = 'none';
+
+            if (!finalAssignedLevel) {
+                finalAssignedLevel = levels[currentLevelIndex].failLevel;
+            }
+
+            showScreen('screenResults');
+            document.getElementById('finalLevelDisplay').innerText = finalAssignedLevel;
+
+            renderStudentReport();
+            saveDataToSheetDB();
+        }
+
+        // Render Report for Student
+        function renderStudentReport() {
+            const reportContainer = document.getElementById('studentReportBreakdown');
+            let html = `<h3 style="margin-bottom:1rem; border-bottom:1px solid #ccc; padding-bottom:0.5rem;">Detailed Answer Report / تقرير الإجابات التفصيلي</h3>`;
+
+            // Loop through all completed levels
+            for (let i = 0; i <= currentLevelIndex; i++) {
+                const lvl = levels[i];
+                const score = sectionScores[lvl.id] || 0;
+
+                html += `
+                    <div class="report-section">
+                        <div class="report-section-header">
+                            <span>${lvl.name}</span>
+                            <span>Score: ${score} / 30</span>
+                        </div>
+                `;
+
+                lvl.parts.forEach(part => {
+                    part.questions.forEach((q) => {
+                        const userAns = (userAnswers[lvl.id] && userAnswers[lvl.id][q.id]) ? userAnswers[lvl.id][q.id] : "No Answer";
+                        let isCorrect = false;
+
+                        if (q.options) {
+                            isCorrect = (userAns === q.answer);
+                        } else {
+                            const cleanUser = userAns.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+                            const cleanAns = q.answer.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+                            isCorrect = cleanUser && cleanAns.includes(cleanUser);
+                        }
+
+                        html += `
+                            <div class="report-q-item">
+                                <div><strong>Q:</strong> ${q.text}</div>
+                                <div>Your Answer: <span class="${isCorrect ? 'correct-answer' : 'wrong-answer'}">${userAns || 'None'}</span></div>
+                                ${!isCorrect ? `<div style="font-size:0.85rem; color:#555;">Correct Answer: <span class="correct-answer">${q.answer}</span></div>` : ''}
                             </div>
                         `;
                     });
-                    qHTML += `</div>`;
-                } else if (q.type === 'text') {
-                    qHTML += `
-                        <div class="pt-2 pl-8">
-                            <input type="text" name="${q.id}" placeholder="Type your answer here..." class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg text-xs outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500">
-                        </div>
-                    `;
-                }
+                });
 
-                qCard.innerHTML = qHTML;
-                container.appendChild(qCard);
-            });
+                html += `</div>`;
+            }
 
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            reportContainer.innerHTML = html;
         }
 
-        // SUBMIT CURRENT SECTION
-        function handleSectionSubmit(e) {
-            e.preventDefault();
-            const levelKey = testState.currentLevelKey;
-            const levelData = QUESTIONS_DATA[levelKey];
-            const formData = new FormData(e.target);
+        // Post Data to SheetDB
+        async function saveDataToSheetDB() {
+            const timestamp = new Date().toLocaleString();
+            const scoresSummary = Object.keys(sectionScores).map(k => `${k}: ${sectionScores[k]}/30`).join(' | ');
 
-            let sectionScore = 0;
-            testState.detailedAnswers[levelKey] = [];
-
-            levelData.questions.forEach(q => {
-                const studentVal = (formData.get(q.id) || '').toString().trim();
-                let isCorrect = false;
-
-                if (q.type === 'mc') {
-                    if (studentVal.toLowerCase() === q.correct.toLowerCase()) {
-                        isCorrect = true;
+            const payload = {
+                data: [
+                    {
+                        "Timestamp": timestamp,
+                        "Student_Name": studentData.name,
+                        "Phone_Number": studentData.phone,
+                        "Assigned_Level": finalAssignedLevel,
+                        "Scores_Summary": scoresSummary,
+                        "Full_Answers_JSON": JSON.stringify(userAnswers)
                     }
-                } else if (q.type === 'text') {
-                    const normStudent = studentVal.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "").trim();
-                    isCorrect = q.correctAnswers.some(ans => ans.toLowerCase().trim() === normStudent);
-                }
+                ]
+            };
 
-                if (isCorrect) {
-                    sectionScore += 1;
-                }
-
-                let correctDisplay = q.type === 'mc' ? q.correct : q.correctAnswers.join(' / ');
-                testState.detailedAnswers[levelKey].push({
-                    qText: q.text,
-                    studentAns: studentVal || 'No Answer',
-                    correctAns: correctDisplay,
-                    isCorrect: isCorrect
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
                 });
-            });
 
-            testState.sectionScores[levelKey] = sectionScore;
-
-            // Progression check
-            if (sectionScore >= levelData.threshold && levelData.nextLevel && QUESTIONS_DATA[levelData.nextLevel]) {
-                loadLevelSection(levelData.nextLevel);
-            } else {
-                if (sectionScore >= levelData.threshold && !levelData.nextLevel) {
-                    testState.finalLevel = levelKey; // Max reached (C1)
+                if (response.ok) {
+                    document.getElementById('savingStatus').innerText = "✓ Results successfully saved to database.";
+                    document.getElementById('savingStatus').style.color = "var(--success-green)";
                 } else {
-                    testState.finalLevel = levelKey;
+                    document.getElementById('savingStatus').innerText = "⚠️ Failed to save to remote database. Saved locally.";
                 }
-                finishTestAndShowResult();
+            } catch (err) {
+                console.error(err);
+                document.getElementById('savingStatus').innerText = "⚠️ Error connecting to server. Saved locally.";
             }
         }
 
-        // FINISH TEST & RENDER RESULT
-        async function finishTestAndShowResult() {
-            if (testState.timerInterval) clearInterval(testState.timerInterval);
-            testState.endTime = new Date();
-
-            const durationMs = testState.endTime - testState.startTime;
-            const totalSecs = Math.floor(durationMs / 1000);
-            const durationMins = Math.floor(totalSecs / 60);
-            const durationSecs = totalSecs % 60;
-            const timeTakenStr = `${durationMins}m ${durationSecs}s`;
-
-            document.getElementById('resStudentName').innerText = testState.studentName;
-            document.getElementById('resStudentPhone').innerText = testState.studentPhone;
-            document.getElementById('resTimeTaken').innerText = timeTakenStr;
-
-            const levelTitles = {
-                'A1': 'Elementary (A1)',
-                'A2': 'Pre-Intermediate (A2)',
-                'B1': 'Intermediate (B1)',
-                'B2': 'Upper-Intermediate (B2)',
-                'C1': 'Advanced (C1)'
-            };
-            document.getElementById('resultBadge').innerText = levelTitles[testState.finalLevel] || testState.finalLevel;
-
-            // Render score breakdown per level taken
-            const breakdownContainer = document.getElementById('scoreBreakdownList');
-            breakdownContainer.innerHTML = '';
-            
-            Object.keys(testState.sectionScores).forEach(lvlKey => {
-                const score = testState.sectionScores[lvlKey];
-                const thresh = QUESTIONS_DATA[lvlKey].threshold;
-                const passed = score >= thresh;
-
-                const row = document.createElement('div');
-                row.className = "flex items-center justify-between bg-gray-50 p-3 rounded-xl border border-gray-200 text-xs";
-                row.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <span class="font-bold text-gray-900">${QUESTIONS_DATA[lvlKey].levelName}</span>
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${passed ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">
-                            ${passed ? 'Passed Section' : 'Final Placement Level'}
-                        </span>
-                    </div>
-                    <div class="font-mono font-bold text-sm text-gray-900">${score} / 30</div>
-                `;
-                breakdownContainer.appendChild(row);
-            });
-
-            // Render detailed answer report
-            const detailedContainer = document.getElementById('detailedReportContainer');
-            detailedContainer.innerHTML = '';
-
-            Object.keys(testState.detailedAnswers).forEach(lvlKey => {
-                const answersArr = testState.detailedAnswers[lvlKey];
-                const sectionBlock = document.createElement('div');
-                sectionBlock.className = "space-y-3 border-b pb-6 last:border-b-0";
-
-                let blockHTML = `
-                    <h4 class="font-bold text-sm text-gray-900 bg-gray-100 px-3 py-1.5 rounded-lg inline-block">
-                        ${QUESTIONS_DATA[lvlKey].levelName} Section Answers
-                    </h4>
-                    <div class="space-y-3 pt-2">
-                `;
-
-                answersArr.forEach((ans, i) => {
-                    blockHTML += `
-                        <div class="p-3.5 rounded-xl border text-xs space-y-1.5 ${ans.isCorrect ? 'bg-emerald-50/60 border-emerald-200' : 'bg-red-50/60 border-red-200'}">
-                            <div class="font-semibold text-gray-900 flex justify-between gap-2">
-                                <span>Q${i+1}. ${escapeHTML(ans.qText)}</span>
-                                ${ans.isCorrect 
-                                    ? '<span class="text-emerald-700 font-bold shrink-0"><i class="fa-solid fa-check"></i> Correct</span>' 
-                                    : '<span class="text-red-700 font-bold shrink-0"><i class="fa-solid fa-xmark"></i> Incorrect</span>'}
-                            </div>
-                            <div class="text-gray-700">
-                                <span class="font-semibold">Your Answer:</span> <span class="${ans.isCorrect ? 'text-emerald-800' : 'text-red-800 font-medium'}">${escapeHTML(ans.studentAns)}</span>
-                            </div>
-                            ${!ans.isCorrect ? `
-                                <div class="text-gray-600">
-                                    <span class="font-semibold text-gray-800">Correct Answer:</span> <span class="text-emerald-700 font-semibold">${escapeHTML(ans.correctAns)}</span>
-                                </div>
-                            ` : ''}
-                        </div>
-                    `;
-                });
-
-                blockHTML += `</div>`;
-                sectionBlock.innerHTML = blockHTML;
-                detailedContainer.appendChild(sectionBlock);
-            });
-
-            // Save record to local storage & persistent database
-            const submissionRecord = {
-                id: 'sub_' + Date.now(),
-                timestamp: new Date().toLocaleString(),
-                studentName: testState.studentName,
-                studentPhone: testState.studentPhone,
-                timeTaken: timeTakenStr,
-                finalLevel: testState.finalLevel,
-                sectionScores: testState.sectionScores,
-                detailedAnswers: testState.detailedAnswers
-            };
-
-            saveSubmissionRecordLocal(submissionRecord);
-            if (typeof window.saveSubmissionToFirestore === 'function') {
-                await window.saveSubmissionToFirestore(submissionRecord);
-            }
-
-            // UI view switch
-            document.getElementById('stepTest').classList.add('hidden');
-            document.getElementById('timerContainer').classList.add('hidden');
-            document.getElementById('globalProgressBarContainer').classList.add('hidden');
-            document.getElementById('stepResult').classList.remove('hidden');
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // STORAGE FALLBACK
-        function saveSubmissionRecordLocal(record) {
-            let submissions = JSON.parse(localStorage.getItem('etc_placement_submissions') || '[]');
-            submissions.push(record);
-            localStorage.setItem('etc_placement_submissions', JSON.stringify(submissions));
-        }
-
-        function getAllSubmissions() {
-            if (window.remoteSubmissions && window.remoteSubmissions.length > 0) {
-                return window.remoteSubmissions;
-            }
-            return JSON.parse(localStorage.getItem('etc_placement_submissions') || '[]');
-        }
-
-        // ADMIN DASHBOARD LOGIC
-        function openAdminModal() {
-            document.getElementById('adminLoginModal').classList.remove('hidden');
-            document.getElementById('adminLoginModal').classList.add('flex');
-            document.getElementById('adminPassword').value = '';
-            document.getElementById('adminLoginError').classList.add('hidden');
-        }
-
-        function closeAdminModal() {
-            document.getElementById('adminLoginModal').classList.add('hidden');
-            document.getElementById('adminLoginModal').classList.remove('flex');
-        }
-
-        function handleAdminLogin(e) {
-            e.preventDefault();
-            const pass = document.getElementById('adminPassword').value;
-            // Admin password requested: etc2005
-            if (pass === 'etc2005') {
-                closeAdminModal();
-                showAdminDashboard();
+        // ADMIN DASHBOARD FUNCTIONS
+        function toggleAdminView() {
+            const currentScreen = document.querySelector('.screen.active').id;
+            if (currentScreen === 'screenAdmin') {
+                showScreen('screenRegistration');
+                document.getElementById('adminNavBtn').innerText = "Admin Login";
             } else {
-                document.getElementById('adminLoginError').classList.remove('hidden');
+                const pass = prompt("Enter Admin Password:");
+                if (pass === ADMIN_PASS) {
+                    showScreen('screenAdmin');
+                    document.getElementById('adminNavBtn').innerText = "Exit Admin";
+                    fetchAdminData();
+                } else if (pass !== null) {
+                    alert("Incorrect Password!");
+                }
             }
         }
 
-        function showAdminDashboard() {
-            document.getElementById('adminDashboardModal').classList.remove('hidden');
-            renderAdminTable();
+        function logoutAdmin() {
+            showScreen('screenRegistration');
+            document.getElementById('adminNavBtn').innerText = "Admin Login";
         }
 
-        function closeAdminDashboard() {
-            document.getElementById('adminDashboardModal').classList.add('hidden');
+        async function fetchAdminData() {
+            try {
+                const res = await fetch(API_URL);
+                if (res.ok) {
+                    adminSubmissions = await res.json();
+                    renderAdminTable();
+                } else {
+                    alert("Could not load data from SheetDB.");
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Failed to connect to SheetDB API.");
+            }
         }
 
         function renderAdminTable() {
-            const records = getAllSubmissions();
-            const searchTerm = (document.getElementById('adminSearchInput').value || '').toLowerCase();
-
-            const filtered = records.filter(r => 
-                (r.studentName || '').toLowerCase().includes(searchTerm) || 
-                (r.studentPhone || '').toLowerCase().includes(searchTerm)
-            );
-
-            // Update stats
-            document.getElementById('statTotal').innerText = records.length;
-            document.getElementById('statA1').innerText = records.filter(r => r.finalLevel === 'A1').length;
-            document.getElementById('statA2').innerText = records.filter(r => r.finalLevel === 'A2').length;
-            document.getElementById('statB1').innerText = records.filter(r => r.finalLevel === 'B1').length;
-            document.getElementById('statB2').innerText = records.filter(r => r.finalLevel === 'B2').length;
-            document.getElementById('statC1').innerText = records.filter(r => r.finalLevel === 'C1').length;
-
-            document.getElementById('adminRecordCount').innerText = filtered.length;
-
+            const query = document.getElementById('adminSearch').value.toLowerCase();
             const tbody = document.getElementById('adminTableBody');
-            tbody.innerHTML = '';
+            tbody.innerHTML = "";
+
+            const filtered = adminSubmissions.filter(item => {
+                const name = (item.Student_Name || "").toLowerCase();
+                const phone = (item.Phone_Number || "").toLowerCase();
+                return name.includes(query) || phone.includes(query);
+            });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-gray-400">No student submissions found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem;">No student submissions found.</td></tr>`;
                 return;
             }
 
-            filtered.slice().reverse().forEach(rec => {
+            filtered.forEach((item, index) => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-gray-50 transition border-b border-gray-100";
-
-                let scoresSummary = Object.keys(rec.sectionScores || {}).map(k => `${k}: ${rec.sectionScores[k]}/30`).join(' | ');
-
                 tr.innerHTML = `
-                    <td class="p-3.5 font-mono text-gray-500 whitespace-nowrap">${escapeHTML(rec.timestamp)}</td>
-                    <td class="p-3.5 font-bold text-gray-900">${escapeHTML(rec.studentName)}</td>
-                    <td class="p-3.5 text-gray-700">${escapeHTML(rec.studentPhone)}</td>
-                    <td class="p-3.5">
-                        <span class="px-2.5 py-1 bg-red-100 text-red-700 font-bold rounded-full text-xs">
-                            ${escapeHTML(rec.finalLevel)}
-                        </span>
-                    </td>
-                    <td class="p-3.5 text-gray-600 font-mono text-[11px]">${escapeHTML(scoresSummary)}</td>
-                    <td class="p-3.5 text-right whitespace-nowrap">
-                        <button onclick='viewStudentAudit("${rec.id}")' class="px-3 py-1.5 bg-gray-900 hover:bg-black text-white rounded-lg text-xs font-semibold transition">
-                            <i class="fa-solid fa-eye mr-1"></i> View Report
-                        </button>
+                    <td>${item.Timestamp || '-'}</td>
+                    <td><strong>${item.Student_Name || '-'}</strong></td>
+                    <td>${item.Phone_Number || '-'}</td>
+                    <td><span class="level-badge" style="font-size:0.9rem; padding:0.2rem 0.6rem;">${item.Assigned_Level || '-'}</span></td>
+                    <td>${item.Scores_Summary || '-'}</td>
+                    <td>
+                        <button class="btn btn-outline" style="padding:0.3rem 0.6rem; font-size:0.8rem;" onclick="viewStudentDetails(${index})">🔍 Inspect</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function viewStudentAudit(recId) {
-            const records = getAllSubmissions();
-            const studentRec = records.find(r => r.id === recId);
-            if (!studentRec) return;
+        function viewStudentDetails(index) {
+            const student = adminSubmissions[index];
+            let answersObj = {};
+            try {
+                answersObj = JSON.parse(student.Full_Answers_JSON || "{}");
+            } catch (e) {
+                console.error("JSON Parse error", e);
+            }
 
-            document.getElementById('modalStudentTitle').innerText = studentRec.studentName;
-            document.getElementById('modalStudentSubtitle').innerText = `Phone: ${studentRec.studentPhone} • Time Taken: ${studentRec.timeTaken}`;
+            const modalBody = document.getElementById('modalBody');
+            let html = `
+                <h2 style="margin-bottom:0.5rem; color:var(--primary-black);">${student.Student_Name}</h2>
+                <p><strong>Phone:</strong> ${student.Phone_Number} | <strong>Assigned Level:</strong> ${student.Assigned_Level}</p>
+                <p><strong>Scores:</strong> ${student.Scores_Summary}</p>
+                <hr style="margin: 1rem 0;">
+                <h3>Detailed Question Breakdown</h3>
+            `;
 
-            const container = document.getElementById('adminReportModalContent');
-            container.innerHTML = '';
-
-            Object.keys(studentRec.detailedAnswers || {}).forEach(lvlKey => {
-                const answersArr = studentRec.detailedAnswers[lvlKey];
-                const sectionBlock = document.createElement('div');
-                sectionBlock.className = "space-y-3 border-b pb-6 last:border-b-0";
-
-                let blockHTML = `
-                    <h4 class="font-bold text-sm text-gray-900 bg-gray-100 px-3 py-1.5 rounded-lg inline-block">
-                        ${QUESTIONS_DATA[lvlKey] ? QUESTIONS_DATA[lvlKey].levelName : lvlKey} Section Answers
-                    </h4>
-                    <div class="space-y-2.5 pt-2">
-                `;
-
-                answersArr.forEach((ans, i) => {
-                    blockHTML += `
-                        <div class="p-3 rounded-xl border text-xs space-y-1 ${ans.isCorrect ? 'bg-emerald-50/60 border-emerald-200' : 'bg-red-50/60 border-red-200'}">
-                            <div class="font-semibold text-gray-900 flex justify-between gap-2">
-                                <span>Q${i+1}. ${escapeHTML(ans.qText)}</span>
-                                ${ans.isCorrect 
-                                    ? '<span class="text-emerald-700 font-bold shrink-0"><i class="fa-solid fa-check"></i> Correct</span>' 
-                                    : '<span class="text-red-700 font-bold shrink-0"><i class="fa-solid fa-xmark"></i> Incorrect</span>'}
+            levels.forEach(lvl => {
+                if (answersObj[lvl.id]) {
+                    html += `
+                        <div class="report-section" style="margin-top:1rem;">
+                            <div class="report-section-header">
+                                <span>Level: ${lvl.name}</span>
                             </div>
-                            <div class="text-gray-700">
-                                <span class="font-semibold">Student Answer:</span> <span class="${ans.isCorrect ? 'text-emerald-800' : 'text-red-800 font-medium'}">${escapeHTML(ans.studentAns)}</span>
-                            </div>
-                            ${!ans.isCorrect ? `
-                                <div class="text-gray-600">
-                                    <span class="font-semibold text-gray-800">Correct Answer:</span> <span class="text-emerald-700 font-semibold">${escapeHTML(ans.correctAns)}</span>
-                                </div>
-                            ` : ''}
-                        </div>
                     `;
-                });
 
-                blockHTML += `</div>`;
-                sectionBlock.innerHTML = blockHTML;
-                container.appendChild(sectionBlock);
+                    lvl.parts.forEach(part => {
+                        part.questions.forEach(q => {
+                            const userAns = answersObj[lvl.id][q.id] || "No Answer";
+                            let isCorrect = false;
+
+                            if (q.options) {
+                                isCorrect = (userAns === q.answer);
+                            } else {
+                                const cleanUser = userAns.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+                                const cleanAns = q.answer.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+                                isCorrect = cleanUser && cleanAns.includes(cleanUser);
+                            }
+
+                            html += `
+                                <div class="report-q-item">
+                                    <div><strong>Q:</strong> ${q.text}</div>
+                                    <div>Student Answer: <span class="${isCorrect ? 'correct-answer' : 'wrong-answer'}">${userAns || 'None'}</span></div>
+                                    ${!isCorrect ? `<div style="font-size:0.85rem; color:#555;">Correct Answer: <span class="correct-answer">${q.answer}</span></div>` : ''}
+                                </div>
+                            `;
+                        });
+                    });
+
+                    html += `</div>`;
+                }
             });
 
-            document.getElementById('adminReportModal').classList.remove('hidden');
-            document.getElementById('adminReportModal').classList.add('flex');
+            modalBody.innerHTML = html;
+            document.getElementById('adminModal').classList.add('active');
         }
 
-        function closeAdminReportModal() {
-            document.getElementById('adminReportModal').classList.add('hidden');
-            document.getElementById('adminReportModal').classList.remove('flex');
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.remove('active');
         }
 
-        // EXPORT SUBMISSIONS TO CSV / EXCEL
-        function exportToCSV() {
-            const records = getAllSubmissions();
-            if (records.length === 0) {
-                alert("No submission records available to export.");
+        function exportToExcel() {
+            if (adminSubmissions.length === 0) {
+                alert("No data available to export!");
                 return;
             }
 
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Date & Time,Student Name,Phone Number,Final Level,Time Taken,Section Scores\n";
+            const exportData = adminSubmissions.map(item => ({
+                "Timestamp": item.Timestamp,
+                "Student Name": item.Student_Name,
+                "Phone Number": item.Phone_Number,
+                "Assigned Level": item.Assigned_Level,
+                "Scores Summary": item.Scores_Summary
+            }));
 
-            records.forEach(r => {
-                let scoresSummary = Object.keys(r.sectionScores || {}).map(k => `${k}:${r.sectionScores[k]}`).join(';');
-                let row = `"${r.timestamp}","${r.studentName}","${r.studentPhone}","${r.finalLevel}","${r.timeTaken}","${scoresSummary}"`;
-                csvContent += row + "\n";
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `ETC_Test_Submissions_${Date.now()}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            const worksheet = XLSX.utils.json_to_sheet(exportData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Submissions");
+            XLSX.writeFile(workbook, `ETC_Placement_Test_Submissions.xlsx`);
         }
-
-        // Attach global functions to window
-        window.renderAdminTable = renderAdminTable;
-        window.viewStudentAudit = viewStudentAudit;
     </script>
 </body>
 </html>
