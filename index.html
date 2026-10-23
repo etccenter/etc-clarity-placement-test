@@ -1,840 +1,919 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-gray-50">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ETC - Tenses Placement Test</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        etc: {
-                            red: '#D32F2F',
-                            darkRed: '#B71C1C',
-                            black: '#111111',
-                            gray: '#F8F9FA'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Custom sleek scrollbar & focus ring styles */
-        body {
-            font-family: 'Inter', sans-serif;
-            color: #111111;
-            background-color: #ffffff;
-        }
-        .bg-pattern {
-            background-image: radial-gradient(#D32F2F 0.5px, transparent 0.5px);
-            background-size: 24px 24px;
-            background-color: #ffffff;
-            opacity: 0.03;
-        }
-        .input-focus:focus {
-            outline: none;
-            border-color: #D32F2F;
-            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.15);
-        }
-        @media print {
-            .no-print { display: none !important; }
-            .print-only { display: block !important; }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ETC - Tenses Placement Test</title>
+  
+  <!-- EmailJS SDK Integration -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  
+  <style>
+    :root {
+      --etc-red: #d32f2f;
+      --etc-red-hover: #b71c1c;
+      --etc-black: #1a1a1a;
+      --etc-dark-gray: #333333;
+      --etc-light-gray: #f8f9fa;
+      --etc-border: #e0e0e0;
+      --etc-white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--etc-white);
+      color: var(--etc-black);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    .header-bar {
+      background-color: var(--etc-black);
+      color: var(--etc-white);
+      padding: 20px 0;
+      border-bottom: 4px solid var(--etc-red);
+      text-align: center;
+      position: relative;
+    }
+
+    .header-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .brand-title {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .brand-title span {
+      color: var(--etc-red);
+    }
+
+    .sub-title {
+      font-size: 14px;
+      color: #ccc;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    .timer-container {
+      background-color: var(--etc-red);
+      color: var(--etc-white);
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 18px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: var(--etc-white);
+      border: 1px solid var(--etc-border);
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 25px;
+    }
+
+    .instructions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+      margin-bottom: 25px;
+      text-align: left;
+    }
+
+    @media (max-width: 768px) {
+      .instructions-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .instruction-box {
+      background-color: var(--etc-light-gray);
+      padding: 20px;
+      border-radius: 6px;
+      border-left: 4px solid var(--etc-red);
+    }
+
+    .instruction-box.ar {
+      direction: rtl;
+      text-align: right;
+      border-left: none;
+      border-right: 4px solid var(--etc-red);
+    }
+
+    .instruction-box h3 {
+      font-size: 16px;
+      margin-bottom: 12px;
+      color: var(--etc-black);
+    }
+
+    .instruction-box ol {
+      padding-left: 18px;
+      font-size: 14px;
+      color: var(--etc-dark-gray);
+    }
+
+    .instruction-box.ar ol {
+      padding-left: 0;
+      padding-right: 18px;
+    }
+
+    .instruction-box li {
+      margin-bottom: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--etc-black);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--etc-border);
+      border-radius: 4px;
+      font-size: 15px;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--etc-red);
+    }
+
+    .btn {
+      background-color: var(--etc-red);
+      color: var(--etc-white);
+      border: none;
+      padding: 14px 28px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background-color: var(--etc-red-hover);
+    }
+
+    .btn:active {
+      transform: scale(0.99);
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    .level-header {
+      border-bottom: 2px solid var(--etc-black);
+      padding-bottom: 10px;
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .level-title {
+      font-size: 22px;
+      color: var(--etc-black);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      background-color: var(--etc-light-gray);
+      padding: 8px 12px;
+      border-left: 3px solid var(--etc-red);
+      margin: 25px 0 15px 0;
+    }
+
+    .question-item {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px dashed var(--etc-border);
+    }
+
+    .question-text {
+      font-weight: 600;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+
+    .options-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--etc-light-gray);
+      padding: 8px 14px;
+      border-radius: 4px;
+      border: 1px solid var(--etc-border);
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .option-label:hover {
+      border-color: var(--etc-red);
+    }
+
+    .option-label input[type="radio"] {
+      accent-color: var(--etc-red);
+    }
+
+    .text-answer-input {
+      width: 100%;
+      max-width: 300px;
+      padding: 8px 12px;
+      border: 1px solid var(--etc-border);
+      border-radius: 4px;
+    }
+
+    /* Report Table Styling */
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .report-table th, .report-table td {
+      border: 1px solid var(--etc-border);
+      padding: 10px 12px;
+      text-align: left;
+    }
+
+    .report-table th {
+      background-color: var(--etc-black);
+      color: var(--etc-white);
+    }
+
+    .status-correct {
+      color: #2e7d32;
+      font-weight: bold;
+    }
+
+    .status-incorrect {
+      color: #c62828;
+      font-weight: bold;
+    }
+
+    .summary-card {
+      background-color: var(--etc-light-gray);
+      border: 2px solid var(--etc-black);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .summary-card h2 {
+      color: var(--etc-red);
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .hide {
+      display: none !important;
+    }
+  </style>
 </head>
-<body class="h-full flex flex-col justify-between text-gray-900 bg-white antialiased selection:bg-red-100 selection:text-etc-red">
+<body>
 
-    <!-- TOP HEADER -->
-    <header class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <!-- Brand Logo / Name -->
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-etc-red text-white flex items-center justify-center font-black rounded-lg shadow-md text-xl tracking-wider">
-                    ETC
-                </div>
-                <div>
-                    <h1 class="font-bold text-lg sm:text-xl text-etc-black leading-tight tracking-tight">
-                        Educational Trust Center
-                    </h1>
-                    <p class="text-xs text-gray-500 font-medium">Tenses Placement Test</p>
-                </div>
-            </div>
+  <!-- Header -->
+  <header class="header-bar">
+    <div class="header-content">
+      <div>
+        <div class="brand-title">ETC <span>Educational Trust Center</span></div>
+        <div class="sub-title">Online Tenses Placement Test</div>
+      </div>
+      <div id="timerDisplay" class="timer-container">
+        ⏰ Time Left: <span id="timeRemaining">30:00</span>
+      </div>
+    </div>
+  </header>
 
-            <!-- Timer Display (Hidden initially) -->
-            <div id="timerContainer" class="hidden flex items-center space-x-2 bg-red-50 border border-red-200 px-4 py-2 rounded-full text-etc-red font-mono font-bold text-base sm:text-lg animate-pulse">
-                <i class="fa-regular fa-clock"></i>
-                <span id="timerDisplay">30:00</span>
-            </div>
+  <div class="container">
+
+    <!-- Registration & Instructions View -->
+    <div id="registrationView" class="card">
+      <h2 style="text-align: center; margin-bottom: 20px; color: var(--etc-black);">Student Registration & Instructions</h2>
+      
+      <div class="form-group">
+        <label for="studentName">Full Name / الاسم الكامل *</label>
+        <input type="text" id="studentName" class="form-control" placeholder="Enter your full name" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="studentPhone">Phone Number / رقم الهاتف *</label>
+        <input type="tel" id="studentPhone" class="form-control" placeholder="Enter your phone number" required>
+      </div>
+
+      <div class="instructions-grid">
+        <!-- English Instructions -->
+        <div class="instruction-box">
+          <h3>Instructions (English)</h3>
+          <ol>
+            <li><strong>Interactive Format:</strong> Conducted online and divided into progressive levels (A1 to C1).</li>
+            <li><strong>Answering Questions:</strong> Select the correct option (a, b, c, or d) or type your answer in the provided space.</li>
+            <li><strong>Progression Rules:</strong> Each section is scored out of 30 marks. System automatically determines if you advance or complete the test.</li>
+            <li><strong>Important Notice:</strong> Do not refresh or close your browser window during the test. Test duration is 30 minutes.</li>
+          </ol>
         </div>
-    </header>
 
-    <!-- MAIN CONTENT WRAPPER -->
-    <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Arabic Instructions -->
+        <div class="instruction-box ar">
+          <h3>التعليمات (بالعربية)</h3>
+          <ol>
+            <li><strong>تنسيق تفاعلي:</strong> يتم إجراؤه عبر الإنترنت وهو مقسم إلى مستويات متدرجة (من A1 إلى C1).</li>
+            <li><strong>الإجابة على الأسئلة:</strong> حدد الخيار الصحيح (a, b, c, or d) أو اكتب إجابتك في المكان المخصص.</li>
+            <li><strong>قواعد التقدم:</strong> كل قسم بدرجة من 30. وبناءً على درجتك، سيحدد النظام ما إذا كنت ستنتقل للمستوى التالي أم تكتفي بالمستوى الحالي.</li>
+            <li><strong>تنبيه هام:</strong> لا تقم بتحديث الصفحة أو إغلاق المتصفح أثناء الاختبار. مدة الاختبار 30 دقيقة.</li>
+          </ol>
+        </div>
+      </div>
 
-        <!-- STEP 1: REGISTRATION & INSTRUCTIONS -->
-        <section id="registrationSection" class="bg-white rounded-2xl border border-gray-200 shadow-xl p-6 sm:p-10 transition-all">
-            <div class="border-b border-gray-100 pb-6 mb-8 text-center sm:text-left">
-                <span class="inline-block px-3 py-1 bg-red-100 text-etc-red font-semibold text-xs rounded-full mb-3 uppercase tracking-wider">Online Assessment</span>
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-etc-black">Welcome to ETC Placement Assessment</h2>
-                <p class="text-gray-600 mt-2 text-sm sm:text-base">Please fill in your contact information and read the test rules thoroughly before beginning.</p>
-            </div>
+      <button type="button" class="btn btn-block" onclick="startTest()">Start Placement Test</button>
+    </div>
 
-            <!-- Registration Form -->
-            <form id="studentRegistrationForm" class="space-y-6 mb-10">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                        <label for="studentName" class="block text-sm font-bold text-gray-800 mb-2">Full Name / الاسم الكامل <span class="text-etc-red">*</span></label>
-                        <input type="text" id="studentName" required placeholder="e.g. John Doe / John Smith" class="w-full px-4 py-3 rounded-lg border border-gray-300 input-focus transition text-sm">
-                    </div>
-                    <div>
-                        <label for="studentPhone" class="block text-sm font-bold text-gray-800 mb-2">Phone Number / رقم الهاتف <span class="text-etc-red">*</span></label>
-                        <input type="tel" id="studentPhone" required placeholder="e.g. +963 9XX XXX XXX" class="w-full px-4 py-3 rounded-lg border border-gray-300 input-focus transition text-sm">
-                    </div>
-                </div>
-            </form>
+    <!-- Test View Container -->
+    <div id="testView" class="card hide">
+      <div class="level-header">
+        <div class="level-title" id="currentLevelTitle">Elementary: A1</div>
+        <div style="font-weight: bold; color: var(--etc-red);">Max Marks: 30</div>
+      </div>
+      
+      <form id="levelForm">
+        <div id="questionsContainer"></div>
+        <button type="button" class="btn btn-block" style="margin-top: 25px;" onclick="submitLevel()">Submit Section & Continue</button>
+      </form>
+    </div>
 
-            <!-- Instructions Block (Dual Language) -->
-            <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-8">
-                <h3 class="text-lg font-bold text-etc-black mb-4 flex items-center border-b border-gray-200 pb-3">
-                    <i class="fa-solid fa-circle-info text-etc-red mr-2"></i> Instructions / التعليمات
-                </h3>
+    <!-- Final Results View -->
+    <div id="resultView" class="card hide">
+      <div class="summary-card">
+        <h3>Test Completed</h3>
+        <p style="margin-top: 5px;">Your Assigned Placement Level:</p>
+        <h2 id="finalAssignedLevel">Elementary A1</h2>
+        <p id="timeTakenText" style="color: var(--etc-dark-gray); font-size: 14px;"></p>
+      </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                    <!-- English Instructions -->
-                    <div class="space-y-4 text-gray-700">
-                        <h4 class="font-bold text-etc-red text-xs uppercase tracking-wider">English Guidelines</h4>
-                        <ol class="list-decimal list-inside space-y-3 font-medium">
-                            <li><span class="font-bold text-gray-900">Interactive Format:</span> Conducted online and divided into progressive levels (Elementary A1 to Advanced C1).</li>
-                            <li><span class="font-bold text-gray-900">Answering Questions:</span> Select the correct option (a, b, c, or d) or type your answer in the space provided.</li>
-                            <li><span class="font-bold text-gray-900">Progression Rules:</span> Each section is scored out of 30 marks. Passing thresholds automatically advance you to the next section.</li>
-                            <li><span class="font-bold text-gray-900">Important Notice:</span> Do not refresh or close your browser during the test to avoid losing progress. Test duration is 30 minutes.</li>
-                        </ol>
-                    </div>
+      <h3 style="margin-bottom: 15px; border-bottom: 2px solid var(--etc-black); padding-bottom: 5px;">Comprehensive Performance Report</h3>
+      
+      <div style="overflow-x: auto;">
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Question</th>
+              <th>Your Answer</th>
+              <th>Correct Answer</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="reportTableBody">
+            <!-- Dynamically Populated -->
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-                    <!-- Arabic Instructions -->
-                    <div class="space-y-4 text-gray-700 dir-rtl text-right" dir="rtl">
-                        <h4 class="font-bold text-etc-red text-xs uppercase tracking-wider">تعليمات الاختبار</h4>
-                        <ol class="list-decimal list-inside space-y-3 font-medium">
-                            <li><span class="font-bold text-gray-900">صيغة تفاعلية:</span> يتم إجراء هذا الاختبار عبر الإنترنت وهو مقسم إلى مستويات متدرجة (من A1 إلى C1).</li>
-                            <li><span class="font-bold text-gray-900">الإجابة على الأسئلة:</span> اختر الخيار الصحيح (أ، ب، ج، أو د) أو اكتب إجابتك في المساحة المخصصة.</li>
-                            <li><span class="font-bold text-gray-900">قواعد الانتقال:</span> يتم تقييم كل قسم من 30 درجة. وبناءً على درجتك، يحدد النظام انتقالك للمستوى التالي.</li>
-                            <li><span class="font-bold text-gray-900">ملاحظة هامة:</span> لا تقم بتحديث أو إغلاق نافذة المتصفح أثناء الاختبار. مدة الاختبار 30 دقيقة.</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
+  </div>
 
-            <div class="text-center sm:text-right">
-                <button type="button" onclick="startAssessment()" class="w-full sm:w-auto px-8 py-4 bg-etc-red hover:bg-etc-darkRed text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition transform active:scale-95 flex items-center justify-center space-x-2 text-base mx-auto sm:ml-auto sm:mr-0">
-                    <span>Start Test Now</span>
-                    <i class="fa-solid fa-arrow-right"></i>
-                </button>
-            </div>
-        </section>
+  <script>
+    // Initialize EmailJS with Public Key
+    (function(){
+      emailjs.init("HBrNXJdSKLLTjcCaF");
+    })();
 
-        <!-- STEP 2: ACTIVE TEST SECTION CONTAINER -->
-        <section id="testSectionContainer" class="hidden">
-            <!-- Level Indicator Header -->
-            <div class="bg-etc-black text-white rounded-t-2xl p-6 flex flex-wrap items-center justify-between gap-4 shadow-md">
-                <div>
-                    <span id="currentLevelBadge" class="px-3 py-1 bg-etc-red text-white text-xs font-bold rounded-full uppercase tracking-wider">Level: A1</span>
-                    <h2 id="currentLevelTitle" class="text-xl sm:text-2xl font-bold mt-2">Elementary: A1</h2>
-                </div>
-                <div class="text-right">
-                    <span class="text-xs text-gray-400 block uppercase">Section Score Potential</span>
-                    <span class="text-lg font-bold text-red-400">30 Marks Max</span>
-                </div>
-            </div>
+    // Application State
+    let studentInfo = { name: '', phone: '' };
+    let currentLevelIndex = 0;
+    let timerInterval = null;
+    let timeRemainingSeconds = 1800; // 30 minutes
+    let userAnswersStore = {}; // levelKey -> answers array
 
-            <!-- Question Form -->
-            <form id="levelQuestionForm" class="bg-white rounded-b-2xl border border-t-0 border-gray-200 shadow-xl p-6 sm:p-10 space-y-10">
-                <div id="questionsContainer" class="space-y-8">
-                    <!-- Dynamic Questions Injected Here -->
-                </div>
+    // Questions Data Structure
+    const testData = [
+      {
+        levelKey: "A1",
+        levelTitle: "Elementary: A1",
+        threshold: 20,
+        questions: [
+          // Choose correct answer (5)
+          { id: "A1_Q1", section: "Choose the correct answer", type: "mcq", text: "John’s an accountant. He…….a laptop.", options: ["a) is got", "b) has got", "c) have got"], correct: "b) has got" },
+          { id: "A1_Q2", section: "Choose the correct answer", type: "mcq", text: "They ___ football every weekend.", options: ["a) play", "b) plays", "c) playing"], correct: "a) play" },
+          { id: "A1_Q3", section: "Choose the correct answer", type: "mcq", text: "___ you from Italy?", options: ["a) Is", "b) Are", "c) Am"], correct: "b) Are" },
+          { id: "A1_Q4", section: "Choose the correct answer", type: "mcq", text: "My father ___ coffee in the morning.", options: ["a) drink", "b) drinking", "c) drinks"], correct: "c) drinks" },
+          { id: "A1_Q5", section: "Choose the correct answer", type: "mcq", text: "We go to school ___ bus.", options: ["a) in", "b) by", "c) at"], correct: "b) by" },
+          
+          // Fill in the gaps (5)
+          { id: "A1_Q6", section: "Fill in the Gaps (the / some / any / a / an / much / many)", type: "text", text: "I have got ……… money in my pocket.", correct: "some" },
+          { id: "A1_Q7", section: "Fill in the Gaps (the / some / any / a / an / much / many)", type: "text", text: "How …….. sisters have you got.", correct: "many" },
+          { id: "A1_Q8", section: "Fill in the Gaps (the / some / any / a / an / much / many)", type: "text", text: "We need to find ……… worker for the job.", correct: "a" },
+          { id: "A1_Q9", section: "Fill in the Gaps (the / some / any / a / an / much / many)", type: "text", text: "There isn’t ……. cheese in the fridge.", correct: "any" },
+          { id: "A1_Q10", section: "Fill in the Gaps (the / some / any / a / an / much / many)", type: "text", text: "There’s ….. apple on the table.", correct: "an" },
 
-                <div class="border-t border-gray-200 pt-8 flex items-center justify-between">
-                    <p class="text-xs text-gray-500 italic">Ensure all questions are answered before submitting this section.</p>
-                    <button type="button" onclick="submitCurrentLevel()" class="px-8 py-3.5 bg-etc-red hover:bg-etc-darkRed text-white font-bold rounded-xl shadow-md transition transform active:scale-95 flex items-center space-x-2">
-                        <span>Submit Section</span>
-                        <i class="fa-solid fa-check"></i>
-                    </button>
-                </div>
-            </form>
-        </section>
+          // Correct mistake (5)
+          { id: "A1_Q11", section: "Correct the underlined Mistake", type: "text", text: "He <u>are</u> my friend.", correct: "is" },
+          { id: "A1_Q12", section: "Correct the underlined Mistake", type: "text", text: "They <u>goes</u> to school every day.", correct: "go" },
+          { id: "A1_Q13", section: "Correct the underlined Mistake", type: "text", text: "I <u>is</u> happy today.", correct: "am" },
+          { id: "A1_Q14", section: "Correct the underlined Mistake", type: "text", text: "She <u>play</u> tennis on Saturdays.", correct: "plays" },
+          { id: "A1_Q15", section: "Correct the underlined Mistake", type: "text", text: "We <u>am</u> tired.", correct: "are" },
 
-        <!-- STEP 3: RESULTS REPORT SCREEN -->
-        <section id="resultsSection" class="hidden space-y-8">
-            <!-- Header Result Card -->
-            <div class="bg-white rounded-2xl border border-gray-200 shadow-xl p-6 sm:p-10 text-center relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-2 bg-etc-red"></div>
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-red-100 text-etc-red rounded-full text-2xl mb-4">
-                    <i class="fa-solid fa-trophy"></i>
-                </div>
-                <h2 class="text-3xl font-extrabold text-etc-black">Test Completed!</h2>
-                <p class="text-gray-600 mt-1">Thank you for completing the ETC Tenses Placement Test.</p>
+          // Change verb in brackets (5)
+          { id: "A1_Q16", section: "Change the verb in brackets to correct form", type: "text", text: "She (go) ………………. to school by bus.", correct: "goes" },
+          { id: "A1_Q17", section: "Change the verb in brackets to correct form", type: "text", text: "They (watch) ………………. TV at night.", correct: "watch" },
+          { id: "A1_Q18", section: "Change the verb in brackets to correct form", type: "text", text: "I (be) ………………. fine today.", correct: "am" },
+          { id: "A1_Q19", section: "Change the verb in brackets to correct form", type: "text", text: "My father (drive) ……………….a Mercedes.", correct: "drives" },
+          { id: "A1_Q20", section: "Change the verb in brackets to correct form", type: "text", text: "We (play) ……………….football after school.", correct: "play" },
 
-                <!-- Student Information & Final Assigned Level -->
-                <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto text-left bg-gray-50 p-6 rounded-xl border border-gray-200">
-                    <div>
-                        <span class="text-xs text-gray-500 uppercase font-semibold block">Student Name</span>
-                        <span id="resStudentName" class="font-bold text-gray-900 text-base">---</span>
-                    </div>
-                    <div>
-                        <span class="text-xs text-gray-500 uppercase font-semibold block">Phone Number</span>
-                        <span id="resStudentPhone" class="font-bold text-gray-900 text-base">---</span>
-                    </div>
-                    <div>
-                        <span class="text-xs text-gray-500 uppercase font-semibold block">Final Assigned Level</span>
-                        <span id="resAssignedLevel" class="inline-block px-3 py-1 bg-etc-red text-white text-xs font-bold rounded-full mt-1">---</span>
-                    </div>
-                </div>
+          // Vocabulary (5)
+          { id: "A1_Q21", section: "Vocabulary", type: "mcq", text: "A doctor works in a ___.", options: ["a) school", "b) hospital", "c) supermarket"], correct: "b) hospital" },
+          { id: "A1_Q22", section: "Vocabulary", type: "mcq", text: "We use a ___ to call people.", options: ["a) phone", "b) chair", "c) window"], correct: "a) phone" },
+          { id: "A1_Q23", section: "Vocabulary", type: "mcq", text: "My father’s brother is my ___.", options: ["a) cousin", "b) uncle", "c) nephew"], correct: "b) uncle" },
+          { id: "A1_Q24", section: "Vocabulary", type: "mcq", text: "I eat breakfast in the ___.", options: ["a) morning", "b) night", "c) afternoon"], correct: "a) morning" },
+          { id: "A1_Q25", section: "Vocabulary", type: "mcq", text: "Which word is a color?", options: ["a) Apple", "b) Blue", "c) Table"], correct: "b) Blue" },
 
-                <!-- Email Sending Status Indicator (Subtle/Hidden API simulation) -->
-                <div id="emailStatus" class="mt-4 text-xs text-gray-400 italic">
-                    <i class="fa-solid fa-paper-plane mr-1"></i> Results automatically recorded and synced with system records.
-                </div>
-            </div>
+          // Everyday English (5)
+          { id: "A1_Q26", section: "Questions and Everyday English", type: "mcq", text: "“How are you?”", options: ["a) I’m fine, thanks.", "b) I’m ten years old.", "c) It’s Monday."], correct: "a) I’m fine, thanks." },
+          { id: "A1_Q27", section: "Questions and Everyday English", type: "mcq", text: "“What’s your name?”", options: ["a) I’m from Spain.", "b) My name is Carla.", "c) I’m a student."], correct: "b) My name is Carla." },
+          { id: "A1_Q28", section: "Questions and Everyday English", type: "mcq", text: "___ old are you?", options: ["a) What", "b) Who", "c) How"], correct: "c) How" },
+          { id: "A1_Q29", section: "Questions and Everyday English", type: "mcq", text: "Can you help me, please?", options: ["a) Yes, of course.", "b) Thank you.", "c) Good night."], correct: "a) Yes, of course." },
+          { id: "A1_Q30", section: "Questions and Everyday English", type: "mcq", text: "“See you tomorrow!”", options: ["a) Thank you.", "b) Excuse me", "c) See you!"], correct: "c) See you!" }
+        ]
+      },
+      {
+        levelKey: "A2",
+        levelTitle: "Pre-intermediate: A2",
+        threshold: 22,
+        questions: [
+          // Choose correct answer (10)
+          { id: "A2_Q1", section: "Choose the Correct Answer", type: "mcq", text: "My sister _ to work every day.", options: ["a) go", "b) goes", "c) going", "d) went"], correct: "b) goes" },
+          { id: "A2_Q2", section: "Choose the Correct Answer", type: "mcq", text: "They_ football now.", options: ["a) play", "b) plays", "c) are playing", "d) played"], correct: "c) are playing" },
+          { id: "A2_Q3", section: "Choose the Correct Answer", type: "mcq", text: "We have lunch _ 1:00 p.m.", options: ["a) in", "b) on", "c) at", "d) by"], correct: "c) at" },
+          { id: "A2_Q4", section: "Choose the Correct Answer", type: "mcq", text: "I was born _ May.", options: ["a) in", "b) on", "c) at", "d) from"], correct: "a) in" },
+          { id: "A2_Q5", section: "Choose the Correct Answer", type: "mcq", text: "A car is _ than a bicycle.", options: ["a) fast", "b) faster", "c) fastest", "d) more fast"], correct: "b) faster" },
+          { id: "A2_Q6", section: "Choose the Correct Answer", type: "mcq", text: "This is the _ restaurant in town.", options: ["a) good", "b) better", "c) best", "d) more good"], correct: "c) best" },
+          { id: "A2_Q7", section: "Choose the Correct Answer", type: "mcq", text: "We_ to the cinema last night.", options: ["a) go", "b) goes", "c) went", "d) going"], correct: "c) went" },
+          { id: "A2_Q8", section: "Choose the Correct Answer", type: "mcq", text: "She_ her homework yesterday.", options: ["a) finish", "b) finished", "c) finishing", "d) finishes"], correct: "b) finished" },
+          { id: "A2_Q9", section: "Choose the Correct Answer", type: "mcq", text: "I_ my keys. I can’t find them.", options: ["a) lost", "b) lose", "c) have lost", "d) losing"], correct: "c) have lost" },
+          { id: "A2_Q10", section: "Choose the Correct Answer", type: "mcq", text: "They_ to Italy three times.", options: ["a) went", "b) have been", "c) are going", "d) go"], correct: "b) have been" },
 
-            <!-- Level Progression Summary Table -->
-            <div class="bg-white rounded-2xl border border-gray-200 shadow-xl p-6 sm:p-8">
-                <h3 class="text-xl font-bold text-etc-black mb-4 flex items-center">
-                    <i class="fa-solid fa-chart-line text-etc-red mr-2"></i> Section Performance Summary
-                </h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-sm">
-                        <thead>
-                            <tr class="bg-gray-100 text-gray-700 uppercase text-xs border-b border-gray-200">
-                                <th class="p-3.5 font-bold">Level Section</th>
-                                <th class="p-3.5 font-bold">Score</th>
-                                <th class="p-3.5 font-bold">Percentage</th>
-                                <th class="p-3.5 font-bold">Section Outcome</th>
-                            </tr>
-                        </thead>
-                        <tbody id="summaryTableBody" class="divide-y divide-gray-200 font-medium">
-                            <!-- Dynamic Summary Rows -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+          // Choose correct word (5)
+          { id: "A2_Q11", section: "Choose the Correct word", type: "mcq", text: "A_ works in a restaurant.", options: ["a) doctor", "b) teacher", "c) driver", "d) chef"], correct: "d) chef" },
+          { id: "A2_Q12", section: "Choose the Correct word", type: "mcq", text: "We use a _ to take photos.", options: ["a) camera", "b) pillow", "c) spoon", "d) key"], correct: "a) camera" },
+          { id: "A2_Q13", section: "Choose the Correct word", type: "mcq", text: "A bird that lays eggs we eat ……. .", options: ["a) hen", "b) parrot", "c) bat", "d) penguin"], correct: "a) hen" },
+          { id: "A2_Q14", section: "Choose the Correct word", type: "mcq", text: "An illness in the chest", options: ["a) jog", "b) cough", "c) log", "d) rough"], correct: "b) cough" },
+          { id: "A2_Q15", section: "Choose the Correct word", type: "mcq", text: "Click on this …………. to print.", options: ["a) upgrade", "b) save", "c) icon", "d) processor"], correct: "c) icon" },
 
-            <!-- Detailed Answer Review Report -->
-            <div class="bg-white rounded-2xl border border-gray-200 shadow-xl p-6 sm:p-8">
-                <div class="flex items-center justify-between border-b border-gray-200 pb-4 mb-6">
-                    <h3 class="text-xl font-bold text-etc-black flex items-center">
-                        <i class="fa-solid fa-list-check text-etc-red mr-2"></i> Comprehensive Answer Report
-                    </h3>
-                    <button onclick="window.print()" class="no-print px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold rounded-lg transition flex items-center space-x-1">
-                        <i class="fa-solid fa-print"></i>
-                        <span>Print Report</span>
-                    </button>
-                </div>
+          // Everyday English (6)
+          { id: "A2_Q16", section: "Everyday English", type: "mcq", text: "“Where are you from?”", options: ["a) I’m a student.", "b) I’m from Egypt.", "c) I’m 20 years old.", "d) I’m happy."], correct: "b) I’m from Egypt." },
+          { id: "A2_Q17", section: "Everyday English", type: "mcq", text: "“How do you do?”", options: ["a) I’m fine, thanks.", "b) See you later.", "c) How do you do?", "d) Good night."], correct: "c) How do you do?" },
+          { id: "A2_Q18", section: "Everyday English", type: "mcq", text: "“Thank you very much.”", options: ["a) Excuse me.", "b) You’re welcome.", "c) I’m sorry.", "d) Hello."], correct: "b) You’re welcome." },
+          { id: "A2_Q19", section: "Everyday English", type: "mcq", text: "“What time is it?”", options: ["a) It’s sunny.", "b) It’s Tuesday.", "c) It’s 4:15.", "d) It’s mine."], correct: "c) It’s 4:15." },
+          { id: "A2_Q20", section: "Everyday English", type: "mcq", text: "“Can I open the window?”", options: ["a) Yes, you can.", "b) I’m opening it.", "c) Open the door.", "d) At the window."], correct: "a) Yes, you can." },
+          { id: "A2_Q21", section: "Everyday English", type: "mcq", text: "“……………., I’m looking for doctor John’s office.”", options: ["a) Help me", "b) Excuse me", "c) show me", "d) correct me"], correct: "b) Excuse me" },
 
-                <div id="detailedReportContainer" class="space-y-8">
-                    <!-- Injected Detailed Question Breakdown -->
-                </div>
-            </div>
-        </section>
+          // Complete Sentences (4)
+          { id: "A2_Q22", section: "Complete the Sentences", type: "text", text: "She usually ……………… tea in the morning.", correct: "drinks" },
+          { id: "A2_Q23", section: "Complete the Sentences", type: "text", text: "They are ……………… TV now.", correct: "watching" },
+          { id: "A2_Q24", section: "Complete the Sentences", type: "text", text: "We went to the beach ……………… Sunday.", correct: "on" },
+          { id: "A2_Q25", section: "Complete the Sentences", type: "text", text: "My bag is ………………than yours.", correct: "bigger" },
 
-    </main>
+          // Correct Mistake (5)
+          { id: "A2_Q26", section: "Correct the underlined mistake", type: "text", text: "A rhinoceros is <u>more slow</u> than a man.", correct: "slower" },
+          { id: "A2_Q27", section: "Correct the underlined mistake", type: "text", text: "At 4.00 o’clock he <u>is starting</u> with the vegetables.", correct: "starts" },
+          { id: "A2_Q28", section: "Correct the underlined mistake", type: "text", text: "Julie is tired. She <u>works</u> for 5 hours.", correct: "has been working" },
+          { id: "A2_Q29", section: "Correct the underlined mistake", type: "text", text: "In 1845, 24,000 people <u>live</u> in Hong Kong.", correct: "lived" },
+          { id: "A2_Q30", section: "Correct the underlined mistake", type: "text", text: "I’ll see you <u>on tomorrow</u>.", correct: "tomorrow" }
+        ]
+      },
+      {
+        levelKey: "B1",
+        levelTitle: "Intermediate: B1",
+        threshold: 25,
+        questions: [
+          // MCQ (10)
+          { id: "B1_Q1", section: "Choose the Correct Answer", type: "mcq", text: "1. The classroom ______ every day after school.", options: ["a) cleans", "b) is cleaned", "c) cleaned", "d) cleaning"], correct: "b) is cleaned" },
+          { id: "B1_Q2", section: "Choose the Correct Answer", type: "mcq", text: "2. I think it ______ be cold tomorrow.", options: ["a) will", "b) going to", "c) is", "d) was"], correct: "a) will" },
+          { id: "B1_Q3", section: "Choose the Correct Answer", type: "mcq", text: "3. Look at those clouds! It ______ rain soon.", options: ["a) will", "b) is going to", "c) went to", "d) going"], correct: "b) is going to" },
+          { id: "B1_Q4", section: "Choose the Correct Answer", type: "mcq", text: "4. You’re coming to the meeting, ______?", options: ["a) are you", "b) don’t you", "c) aren’t you", "d) won’t you"], correct: "c) aren’t you" },
+          { id: "B1_Q5", section: "Choose the Correct Answer", type: "mcq", text: "5. The woman ___ works at the bank is very kind.", options: ["a) which", "b) who", "c) where", "d) whose"], correct: "b) who" },
+          { id: "B1_Q6", section: "Choose the Correct Answer", type: "mcq", text: "6. My sister is ___ friendly ___ my mother.", options: ["a) as / as", "b) so / than", "c) more / as", "d) as / than"], correct: "a) as / as" },
+          { id: "B1_Q7", section: "Choose the Correct Answer", type: "mcq", text: "7. If I study hard, I ______ the exam.", options: ["a) passes", "b) passed", "c) will pass", "d) passing"], correct: "c) will pass" },
+          { id: "B1_Q8", section: "Choose the Correct Answer", type: "mcq", text: "8. If people recycle more, the environment ____ cleaner.", options: ["a) becomes", "b) became", "c) will becoming", "d) becoming"], correct: "a) becomes" },
+          { id: "B1_Q9", section: "Choose the Correct Answer", type: "mcq", text: "9. This is the book ______ I borrowed from the library.", options: ["a) who", "b) where", "c) which", "d) whose"], correct: "c) which" },
+          { id: "B1_Q10", section: "Choose the Correct Answer", type: "mcq", text: "10. English ______ in many countries around the world.", options: ["a) speaks", "b) is spoken", "c) spoke", "d) speaking"], correct: "b) is spoken" },
 
-    <!-- FOOTER -->
-    <footer class="bg-white border-t border-gray-200 py-6 text-center text-xs text-gray-500 no-print">
-        <p>© 2026 Educational Trust Center (ETC). All rights reserved.</p>
-    </footer>
+          // Vocab (5)
+          { id: "B1_Q11", section: "Vocabulary", type: "mcq", text: "A person who designs buildings is an ______ .", options: ["a) engineer", "b) architect", "c) accountant", "d) electrician"], correct: "b) architect" },
+          { id: "B1_Q12", section: "Vocabulary", type: "mcq", text: "The opposite of “generous” is ______ .", options: ["a) honest", "b) selfish", "c) polite", "d) friendly"], correct: "b) selfish" },
+          { id: "B1_Q13", section: "Vocabulary", type: "mcq", text: "If you feel exhausted, you should ______.", options: ["a) rest", "b) argue", "c) borrow", "d) shout"], correct: "a) rest" },
+          { id: "B1_Q14", section: "Vocabulary", type: "mcq", text: "We usually ______ a hotel before traveling.", options: ["a) repair", "b) reserve", "c) invent", "d) pollute"], correct: "b) reserve" },
+          { id: "B1_Q15", section: "Vocabulary", type: "mcq", text: "My teacher gave me useful ______.", options: ["a) advice", "b) luggage", "c) furniture", "d) equipment"], correct: "a) advice" },
 
-    <!-- JAVASCRIPT APP LOGIC -->
-    <script>
-        /* -------------------------------------------------------------------------- */
-        /* QUESTION DATA BANK                                                         */
-        /* -------------------------------------------------------------------------- */
-        const testData = {
-            A1: {
-                title: "Elementary: A1",
-                passingMark: 20,
-                maxScore: 30,
-                nextLevel: "A2",
-                questions: [
-                    // Multiple Choice /5
-                    { id: "A1_1", category: "Choose the correct answer", type: "mcq", text: "John’s an accountant. He…….a laptop.", options: ["a) is got", "b) has got", "c) have got"], correct: "b" },
-                    { id: "A1_2", category: "Choose the correct answer", type: "mcq", text: "They ___ football every weekend.", options: ["a) play", "b) plays", "c) playing"], correct: "a" },
-                    { id: "A1_3", category: "Choose the correct answer", type: "mcq", text: "___ you from Italy?", options: ["a) Is", "b) Are", "c) Am"], correct: "b" },
-                    { id: "A1_4", category: "Choose the correct answer", type: "mcq", text: "My father ___ coffee in the morning.", options: ["a) drink", "b) drinking", "c) drinks"], correct: "c" },
-                    { id: "A1_5", category: "Choose the correct answer", type: "mcq", text: "We go to school ___ bus.", options: ["a) in", "b) by", "c) at"], correct: "b" },
+          // Everyday English (5)
+          { id: "B1_Q16", section: "Everyday English", type: "mcq", text: "“Would you like something to drink?”", options: ["a) Yes, please.", "b) I drank yesterday.", "c) At the café.", "d) It’s expensive."], correct: "a) Yes, please." },
+          { id: "B1_Q17", section: "Everyday English", type: "mcq", text: "“I’m sorry for breaking your phone.”", options: ["a) Never mind.", "b) I’m fine.", "c) See you later.", "d) Good idea."], correct: "a) Never mind." },
+          { id: "B1_Q18", section: "Everyday English", type: "mcq", text: "“Could you help me carry this box?”", options: ["a) Of course.", "b) I carried it yesterday.", "c) It’s a big box.", "d) At home."], correct: "a) Of course." },
+          { id: "B1_Q19", section: "Everyday English", type: "mcq", text: "“What do you think of the concert?”", options: ["a) It was amazing.", "b) I went by bus.", "c) At eight o’clock.", "d) In the city."], correct: "a) It was amazing." },
+          { id: "B1_Q20", section: "Everyday English", type: "mcq", text: "“How often do you go to the gym?”", options: ["a) For two hours.", "b) Three times a week.", "c) At the sports center.", "d) Last Monday."], correct: "b) Three times a week." },
 
-                    // Fill in the Gaps /5 (Options: the / some / any / a / an / much / many)
-                    { id: "A1_6", category: "Fill in the Gaps (the / some / any / a / an / much / many)", type: "fill", text: "I have got ……… money in my pocket.", correct: ["some"] },
-                    { id: "A1_7", category: "Fill in the Gaps (the / some / any / a / an / much / many)", type: "fill", text: "How …….. sisters have you got.", correct: ["many"] },
-                    { id: "A1_8", category: "Fill in the Gaps (the / some / any / a / an / much / many)", type: "fill", text: "We need to find ……… worker for the job.", correct: ["a"] },
-                    { id: "A1_9", category: "Fill in the Gaps (the / some / any / a / an / much / many)", type: "fill", text: "There isn’t ……. cheese in the fridge.", correct: ["any", "much"] },
-                    { id: "A1_10", category: "Fill in the Gaps (the / some / any / a / an / much / many)", type: "fill", text: "There’s ….. apple on the table.", correct: ["an"] },
+          // Complete Sentences (5)
+          { id: "B1_Q21", section: "Complete the Sentences", type: "text", text: "The homework was ______ by the students yesterday.", correct: "done" },
+          { id: "B1_Q22", section: "Complete the Sentences", type: "text", text: "We are going ______ visit our grandparents this weekend.", correct: "to" },
+          { id: "B1_Q23", section: "Complete the Sentences", type: "text", text: "She is as ______ as her husband.", correct: "tall" },
+          { id: "B1_Q24", section: "Complete the Sentences", type: "text", text: "If I was rich, I ______ buy a big house.", correct: "would" },
+          { id: "B1_Q25", section: "Complete the Sentences", type: "text", text: "The man ______ lives next door is a doctor.", correct: "who" },
 
-                    // Correct the underlined mistake /5
-                    { id: "A1_11", category: "Correct the underlined Mistake", type: "fill", text: "He <u class='text-etc-red font-bold'>are</u> my friend.", correct: ["is"] },
-                    { id: "A1_12", category: "Correct the underlined Mistake", type: "fill", text: "They <u class='text-etc-red font-bold'>goes</u> to school every day.", correct: ["go"] },
-                    { id: "A1_13", category: "Correct the underlined Mistake", type: "fill", text: "I <u class='text-etc-red font-bold'>is</u> happy today.", correct: ["am"] },
-                    { id: "A1_14", category: "Correct the underlined Mistake", type: "fill", text: "She <u class='text-etc-red font-bold'>play</u> tennis on Saturdays.", correct: ["plays"] },
-                    { id: "A1_15", category: "Correct the underlined Mistake", type: "fill", text: "We <u class='text-etc-red font-bold'>am</u> tired.", correct: ["are"] },
+          // Correct Mistake (3)
+          { id: "B1_Q26", section: "Correct the Mistake", type: "text", text: "The windows cleans every morning.", correct: "are cleaned" },
+          { id: "B1_Q27", section: "Correct the Mistake", type: "text", text: "She is going visit her cousin tomorrow.", correct: "is going to visit" },
+          { id: "B1_Q28", section: "Correct the Mistake", type: "text", text: "My car is as faster as yours.", correct: "as fast as" },
 
-                    // Change verb in brackets /5
-                    { id: "A1_16", category: "Change the verb in brackets to the correct form", type: "fill", text: "She (go) ………………. to school by bus.", correct: ["goes"] },
-                    { id: "A1_17", category: "Change the verb in brackets to the correct form", type: "fill", text: "They (watch) ………………. TV at night.", correct: ["watch"] },
-                    { id: "A1_18", category: "Change the verb in brackets to the correct form", type: "fill", text: "I (be) ………………. fine today.", correct: ["am"] },
-                    { id: "A1_19", category: "Change the verb in brackets to the correct form", type: "fill", text: "My father (drive) ………………. a Mercedes.", correct: ["drives"] },
-                    { id: "A1_20", category: "Change the verb in brackets to the correct form", type: "fill", text: "We (play) ………………. football after school.", correct: ["play"] },
+          // Correct form of verb (2)
+          { id: "B1_Q29", section: "Write the Correct Form of the Verb", type: "text", text: "If I …………. (see) Sarah, I would have told her the news.", correct: "had seen" },
+          { id: "B1_Q30", section: "Write the Correct Form of the Verb", type: "text", text: "The new shopping mall ……………. (build) last year.", correct: "was built" }
+        ]
+      },
+      {
+        levelKey: "B2",
+        levelTitle: "Upper-Intermediate: B2",
+        threshold: 25,
+        questions: [
+          // Choose correct answer (5)
+          { id: "B2_Q1", section: "Choose the Correct Answer", type: "mcq", text: "By the time we arrived, the meeting ……………………..", options: ["a) has finished", "b) had finished", "c) was finishing", "d) finishes"], correct: "b) had finished" },
+          { id: "B2_Q2", section: "Choose the Correct Answer", type: "mcq", text: "She …………..… on the project for hours before her manager called.", options: ["a) had been working", "b) has worked", "c) was worked", "d) works"], correct: "a) had been working" },
+          { id: "B2_Q3", section: "Choose the Correct Answer", type: "mcq", text: "If I …………..… more confident, I would apply for the position.", options: ["a) am", "b) were", "c) had been", "d) will be"], correct: "b) were" },
+          { id: "B2_Q4", section: "Choose the Correct Answer", type: "mcq", text: "They ……….. the new policy by next month.", options: ["a) implement", "b) implemented", "c) will have implemented", "d) have implementing"], correct: "c) will have implemented" },
+          { id: "B2_Q5", section: "Choose the Correct Answer", type: "mcq", text: "You ……….. have informed us earlier; now it’s too late.", options: ["a) should", "b) mustn’t", "c) can’t", "d) needn’t"], correct: "a) should" },
 
-                    // Vocabulary /5
-                    { id: "A1_21", category: "Vocabulary", type: "mcq", text: "A doctor works in a ___.", options: ["a) school", "b) hospital", "c) supermarket"], correct: "b" },
-                    { id: "A1_22", category: "Vocabulary", type: "mcq", text: "We use a ___ to call people.", options: ["a) phone", "b) chair", "c) window"], correct: "a" },
-                    { id: "A1_23", category: "Vocabulary", type: "mcq", text: "My father’s brother is my ___.", options: ["a) cousin", "b) uncle", "c) nephew"], correct: "b" },
-                    { id: "A1_24", category: "Vocabulary", type: "mcq", text: "I eat breakfast in the ___.", options: ["a) morning", "b) night", "c) afternoon"], correct: "a" },
-                    { id: "A1_25", category: "Vocabulary", type: "mcq", text: "Which word is a color?", options: ["a) Apple", "b) Blue", "c) Table"], correct: "b" },
+          // Vocabulary (5)
+          { id: "B2_Q6", section: "Vocabulary", type: "mcq", text: "The company is looking for a highly ……….candidate with strong leadership skills.", options: ["a) hesitant", "b) competent", "c) ordinary", "d) careless"], correct: "b) competent" },
+          { id: "B2_Q7", section: "Vocabulary", type: "mcq", text: "His explanation was so ………. that nobody understood it.", options: ["a) vague", "b) efficient", "c) accurate", "d) flexible"], correct: "a) vague" },
+          { id: "B2_Q8", section: "Vocabulary", type: "mcq", text: "The government introduced new measures to ………. pollution.", options: ["a) enhance", "b) reduce", "c) convince", "d) assume"], correct: "b) reduce" },
+          { id: "B2_Q9", section: "Vocabulary", type: "mcq", text: "She was completely ………. by the unexpected news.", options: ["a) delighted", "b) exhausted", "c) astonished", "d) relieved"], correct: "c) astonished" },
+          { id: "B2_Q10", section: "Vocabulary", type: "mcq", text: "The professor gave a very ………. lecture on artificial intelligence.", options: ["a) insightful", "b) temporary", "c) minor", "d) narrow"], correct: "a) insightful" },
 
-                    // Questions and Everyday English /5
-                    { id: "A1_26", category: "Questions and Everyday English", type: "mcq", text: "“How are you?”", options: ["a) I’m fine, thanks.", "b) I’m ten years old.", "c) It’s Monday."], correct: "a" },
-                    { id: "A1_27", category: "Questions and Everyday English", type: "mcq", text: "“What’s your name?”", options: ["a) I’m from Spain.", "b) My name is Carla.", "c) I’m a student."], correct: "b" },
-                    { id: "A1_28", category: "Questions and Everyday English", type: "mcq", text: "___ old are you?", options: ["a) What", "b) Who", "c) How"], correct: "c" },
-                    { id: "A1_29", category: "Questions and Everyday English", type: "mcq", text: "Can you help me, please?", options: ["a) Yes, of course.", "b) Thank you.", "c) Good night."], correct: "a" },
-                    { id: "A1_30", category: "Questions and Everyday English", type: "mcq", text: "“See you tomorrow!”", options: ["a) Thank you.", "b) Excuse me", "c) See you!"], correct: "c" }
-                ]
-            },
+          // Everyday English (5)
+          { id: "B2_Q11", section: "Everyday English", type: "mcq", text: "“Would you mind closing the window?”", options: ["a) Not at all.", "b) I don’t think.", "c) It doesn’t matter.", "d) Never mind."], correct: "a) Not at all." },
+          { id: "B2_Q12", section: "Everyday English", type: "mcq", text: "“I’m afraid I can’t attend the meeting tomorrow.”", options: ["a) That sounds great.", "b) No problem, thanks for letting me know.", "c) I completely agree.", "d) You should attend."], correct: "b) No problem, thanks for letting me know." },
+          { id: "B2_Q13", section: "Everyday English", type: "mcq", text: "“How did your presentation go?”", options: ["a) It depends.", "b) I’d rather not.", "c) It went better than expected.", "d) That’s not necessary."], correct: "c) It went better than expected." },
+          { id: "B2_Q14", section: "Everyday English", type: "mcq", text: "“Could you possibly give me a hand with this report?”", options: ["a) Certainly, I’d be happy to help.", "b) I’m not sure it exists.", "c) I already finished yesterday.", "d) It doesn’t belong to me."], correct: "a) Certainly, I’d be happy to help." },
+          { id: "B2_Q15", section: "Everyday English", type: "mcq", text: "“Do you think the interview went well?”", options: ["a) I’m used to it.", "b) I have no idea.", "c) I hope so.", "d) I can’t afford it."], correct: "c) I hope so." },
 
-            A2: {
-                title: "Pre-intermediate: A2",
-                passingMark: 22,
-                maxScore: 30,
-                nextLevel: "B1",
-                questions: [
-                    // Choose Correct Answer /10
-                    { id: "A2_1", category: "Choose the Correct Answer", type: "mcq", text: "My sister _ to work every day.", options: ["a) go", "b) goes", "c) going", "d) went"], correct: "b" },
-                    { id: "A2_2", category: "Choose the Correct Answer", type: "mcq", text: "They_ football now.", options: ["a) play", "b) plays", "c) are playing", "d) played"], correct: "c" },
-                    { id: "A2_3", category: "Choose the Correct Answer", type: "mcq", text: "We have lunch _ 1:00 p.m.", options: ["a) in", "b) on", "c) at", "d) by"], correct: "c" },
-                    { id: "A2_4", category: "Choose the Correct Answer", type: "mcq", text: "I was born _ May.", options: ["a) in", "b) on", "c) at", "d) from"], correct: "a" },
-                    { id: "A2_5", category: "Choose the Correct Answer", type: "mcq", text: "A car is _ than a bicycle.", options: ["a) fast", "b) faster", "c) fastest", "d) more fast"], correct: "b" },
-                    { id: "A2_6", category: "Choose the Correct Answer", type: "mcq", text: "This is the _ restaurant in town.", options: ["a) good", "b) better", "c) best", "d) more good"], correct: "c" },
-                    { id: "A2_7", category: "Choose the Correct Answer", type: "mcq", text: "We_ to the cinema last night.", options: ["a) go", "b) goes", "c) went", "d) going"], correct: "c" },
-                    { id: "A2_8", category: "Choose the Correct Answer", type: "mcq", text: "She_ her homework yesterday.", options: ["a) finish", "b) finished", "c) finishing", "d) finishes"], correct: "b" },
-                    { id: "A2_9", category: "Choose the Correct Answer", type: "mcq", text: "I_ my keys. I can’t find them.", options: ["a) lost", "b) lose", "c) have lost", "d) losing"], correct: "c" },
-                    { id: "A2_10", category: "Choose the Correct Answer", type: "mcq", text: "They_ to Italy three times.", options: ["a) went", "b) have been", "c) are going", "d) go"], correct: "b" },
+          // Complete Sentences (5)
+          { id: "B2_Q16", section: "Complete the Sentences", type: "text", text: "I have never ______________ such a fascinating documentary before.", correct: "seen" },
+          { id: "B2_Q17", section: "Complete the Sentences", type: "text", text: "By this time tomorrow, we ______________ the final decision.", correct: "will have made" },
+          { id: "B2_Q18", section: "Complete the Sentences", type: "text", text: "She apologized for ______________ so rudely during the discussion.", correct: "behaving" },
+          { id: "B2_Q19", section: "Complete the Sentences", type: "text", text: "If they had prepared better, they ______________ the contract.", correct: "would have won" },
+          { id: "B2_Q20", section: "Complete the Sentences", type: "text", text: "We were exhausted because we ______________ all day.", correct: "had been working" },
 
-                    // Choose Correct Word (Vocabulary) /5
-                    { id: "A2_11", category: "Choose the Correct word", type: "mcq", text: "A_ works in a restaurant.", options: ["a) doctor", "b) teacher", "c) driver", "d) chef"], correct: "d" },
-                    { id: "A2_12", category: "Choose the Correct word", type: "mcq", text: "We use a _ to take photos.", options: ["a) camera", "b) pillow", "c) spoon", "d) key"], correct: "a" },
-                    { id: "A2_13", category: "Choose the Correct word", type: "mcq", text: "A bird that lays eggs we eat …….", options: ["a) hen", "b) parrots", "c) bat", "d) penguin"], correct: "a" },
-                    { id: "A2_14", category: "Choose the Correct word", type: "mcq", text: "An illness in the chest", options: ["a) jog", "b) cough", "c) log", "d) rough"], correct: "b" },
-                    { id: "A2_15", category: "Choose the Correct word", type: "mcq", text: "Click on this …………. to print.", options: ["a) upgrade", "b) save", "c) icon", "d) processor"], correct: "c" },
+          // Correct Mistake (5)
+          { id: "B2_Q21", section: "Correct the Mistake", type: "text", text: "If I <u>would have known</u> about the traffic, I would have left earlier.", correct: "had known" },
+          { id: "B2_Q22", section: "Correct the Mistake", type: "text", text: "She suggested <u>to go</u> to a different restaurant.", correct: "going" },
+          { id: "B2_Q23", section: "Correct the Mistake", type: "text", text: "They <u>has been</u> living here since 2018.", correct: "have been" },
+          { id: "B2_Q24", section: "Correct the Mistake", type: "text", text: "While I <u>studied</u>, my brother was playing loud music.", correct: "was studying" },
+          { id: "B2_Q25", section: "Correct the Mistake", type: "text", text: "He <u>said me</u> that the meeting had been canceled.", correct: "told me" },
 
-                    // Everyday English /6
-                    { id: "A2_16", category: "Everyday English", type: "mcq", text: "“Where are you from?”", options: ["a) I’m a student.", "b) I’m from Egypt.", "c) I’m 20 years old.", "d) I’m happy."], correct: "b" },
-                    { id: "A2_17", category: "Everyday English", type: "mcq", text: "“How do you do?”", options: ["a) I’m fine, thanks.", "b) See you later.", "c) How do you do?", "d) Good night."], correct: "c" },
-                    { id: "A2_18", category: "Everyday English", type: "mcq", text: "“Thank you very much.”", options: ["a) Excuse me.", "b) You’re welcome.", "c) I’m sorry.", "d) Hello."], correct: "b" },
-                    { id: "A2_19", category: "Everyday English", type: "mcq", text: "“What time is it?”", options: ["a) It’s sunny.", "b) It’s Tuesday.", "c) It’s 4:15.", "d) It’s mine."], correct: "c" },
-                    { id: "A2_20", category: "Everyday English", type: "mcq", text: "“Can I open the window?”", options: ["a) Yes, you can.", "b) I’m opening it.", "c) Open the door.", "d) At the window."], correct: "a" },
-                    { id: "A2_21", category: "Everyday English", type: "mcq", text: "“……………., I’m looking for doctor John’s office.”", options: ["a) Help me", "b) Excuse me", "c) show me", "d) correct me"], correct: "b" },
+          // Correct Form Verb (5)
+          { id: "B2_Q26", section: "Write the Correct Form of the Verb", type: "text", text: "By next year, she (complete) ______________ her degree.", correct: "will have completed" },
+          { id: "B2_Q27", section: "Write the Correct Form of the Verb", type: "text", text: "I wish I (have) ______________ more free time these days.", correct: "had" },
+          { id: "B2_Q28", section: "Write the Correct Form of the Verb", type: "text", text: "They (wait) ______________ for over an hour before the bus arrived.", correct: "had been waiting" },
+          { id: "B2_Q29", section: "Write the Correct Form of the Verb", type: "text", text: "If he (listen) ______________to the advice, he wouldn’t have been in trouble now.", correct: "had listened" },
+          { id: "B2_Q30", section: "Write the Correct Form of the Verb", type: "text", text: "At 8 p.m. yesterday, we (discuss) ______________ the new proposal", correct: "were discussing" }
+        ]
+      },
+      {
+        levelKey: "C1",
+        levelTitle: "Advanced: C1",
+        threshold: 25,
+        questions: [
+          // Choose correct answer (5)
+          { id: "C1_Q1", section: "Choose the correct answer", type: "mcq", text: "By the time the committee reached a decision, several members ______________ the proposal.", options: ["a) opposed", "b) had already opposed", "c) have opposed", "d) were opposing"], correct: "b) had already opposed" },
+          { id: "C1_Q2", section: "Choose the correct answer", type: "mcq", text: "She claimed that she ______________ informed about the policy changes beforehand.", options: ["a) has not been", "b) had not been", "c) was not being", "d) would not be"], correct: "b) had not been" },
+          { id: "C1_Q3", section: "Choose the correct answer", type: "mcq", text: "The new regulations ______________ by the board despite considerable opposition.", options: ["a) were applied", "b) applied", "c) have applying", "d) had applied"], correct: "a) were applied" },
+          { id: "C1_Q4", section: "Choose the correct answer", type: "mcq", text: "Hardly ______________ the presentation when the audience started asking questions.", options: ["a) he had finished", "b) had he finished", "c) he finished", "d) did he finish"], correct: "b) had he finished" },
+          { id: "C1_Q5", section: "Choose the correct answer", type: "mcq", text: "It is essential that every applicant ______________the required documentation before Friday.", options: ["a) submits", "b) submit", "c) submitted", "d) will submit"], correct: "b) submit" },
 
-                    // Complete the Sentences /4
-                    { id: "A2_22", category: "Complete the Sentences", type: "fill", text: "She usually ……………… tea in the morning.", correct: ["drinks", "has", "takes"] },
-                    { id: "A2_23", category: "Complete the Sentences", type: "fill", text: "They are ……………… TV now.", correct: ["watching", "looking at"] },
-                    { id: "A2_24", category: "Complete the Sentences", type: "fill", text: "We went to the beach ……………… Sunday.", correct: ["on", "last"] },
-                    { id: "A2_25", category: "Complete the Sentences", type: "fill", text: "My bag is ………………than yours.", correct: ["bigger", "smaller", "heavier", "better", "more expensive", "cheaper"] },
+          // Vocab (5)
+          { id: "C1_Q6", section: "Vocabulary", type: "mcq", text: "His argument was so _______________ that even the critics were persuaded.", options: ["a) compelling", "b) superficial", "c) reluctant", "d) obsolete"], correct: "a) compelling" },
+          { id: "C1_Q7", section: "Vocabulary", type: "mcq", text: "The minister attempted to ______________ concerns regarding the economic downturn.", options: ["a) allocate", "b) alleviate", "c) abolish", "d) withdraw"], correct: "b) alleviate" },
+          { id: "C1_Q8", section: "Vocabulary", type: "mcq", text: "Her remarks were considered highly ______________ and offended several colleagues.", options: ["a) insightful", "b) tactful", "c) inappropriate", "d) coherent"], correct: "c) inappropriate" },
+          { id: "C1_Q9", section: "Vocabulary", type: "mcq", text: "The company faced severe ______________ after the scandal became public.", options: ["a) prosperity", "b) backlash", "c) admiration", "d) stability"], correct: "b) backlash" },
+          { id: "C1_Q10", section: "Vocabulary", type: "mcq", text: "The professor’s theory remains highly ______________ among contemporary researchers.", options: ["a) influential", "b) temporary", "c) irrelevant", "d) fragile"], correct: "a) influential" },
 
-                    // Correct the mistake /5
-                    { id: "A2_26", category: "Correct the underlined Mistake", type: "fill", text: "A rhinoceros is <u class='text-etc-red font-bold'>more slow</u> than a man.", correct: ["slower"] },
-                    { id: "A2_27", category: "Correct the underlined Mistake", type: "fill", text: "At 4.00 o’clock he <u class='text-etc-red font-bold'>is starting</u> with the vegetables.", correct: ["starts"] },
-                    { id: "A2_28", category: "Correct the underlined Mistake", type: "fill", text: "Julie is tired. She <u class='text-etc-red font-bold'>works</u> for 5 hours.", correct: ["has been working", "has worked"] },
-                    { id: "A2_29", category: "Correct the underlined Mistake", type: "fill", text: "In 1845, 24,000 people <u class='text-etc-red font-bold'>live</u> in Hong Kong.", correct: ["lived"] },
-                    { id: "A2_30", category: "Correct the underlined Mistake", type: "fill", text: "I’ll see you <u class='text-etc-red font-bold'>on tomorrow</u>.", correct: ["tomorrow"] }
-                ]
-            },
+          // Everyday English (5)
+          { id: "C1_Q11", section: "Everyday English", type: "mcq", text: "“I’m terribly sorry for the inconvenience.”", options: ["a) Don’t mention it.", "b) It serves you right.", "c) I can’t put up with it.", "d) That’s out of the question."], correct: "a) Don’t mention it." },
+          { id: "C1_Q12", section: "Everyday English", type: "mcq", text: "“Would you be willing to elaborate on your proposal?”", options: ["a) Not in the slightest.", "b) Certainly, I’d be glad to.", "c) It’s beyond me.", "d) I’d rather you didn’t."], correct: "b) Certainly, I’d be glad to." },
+          { id: "C1_Q13", section: "Everyday English", type: "mcq", text: "“I was wondering if you could possibly extend the deadline.”", options: ["a) I suppose that could be arranged.", "b) That’s none of my business.", "c) I’m afraid it’s broken.", "d) You must be joking."], correct: "a) I suppose that could be arranged." },
+          { id: "C1_Q14", section: "Everyday English", type: "mcq", text: "“The conference was far more productive than I had anticipated.”", options: ["a) That’s quite understandable.", "b) I couldn’t agree more.", "c) It slipped my mind.", "d) I’m not convinced by it."], correct: "b) I couldn’t agree more." },
+          { id: "C1_Q15", section: "Everyday English", type: "mcq", text: "“Do you happen to know when the report is due?”", options: ["a) It’s been called off.", "b) As far as I know, it’s due tomorrow.", "c) I’d rather not mention it.", "d) That depends on you."], correct: "b) As far as I know, it’s due tomorrow." },
 
-            B1: {
-                title: "Intermediate: B1",
-                passingMark: 25,
-                maxScore: 30,
-                nextLevel: "B2",
-                questions: [
-                    // Choose Correct Answer /10
-                    { id: "B1_1", category: "Choose the Correct Answer", type: "mcq", text: "1. The classroom ______ every day after school.", options: ["a) cleans", "b) is cleaned", "c) cleaned", "d) cleaning"], correct: "b" },
-                    { id: "B1_2", category: "Choose the Correct Answer", type: "mcq", text: "2. I think it ______ be cold tomorrow.", options: ["a) will", "b) going to", "c) is", "d) was"], correct: "a" },
-                    { id: "B1_3", category: "Choose the Correct Answer", type: "mcq", text: "3. Look at those clouds! It ______ rain soon.", options: ["a) will", "b) is going to", "c) went to", "d) going"], correct: "b" },
-                    { id: "B1_4", category: "Choose the Correct Answer", type: "mcq", text: "4. You’re coming to the meeting, ______?", options: ["a) are you", "b) don’t you", "c) aren’t you", "d) won’t you"], correct: "c" },
-                    { id: "B1_5", category: "Choose the Correct Answer", type: "mcq", text: "5. The woman ___ works at the bank is very kind.", options: ["a) which", "b) who", "c) where", "d) whose"], correct: "b" },
-                    { id: "B1_6", category: "Choose the Correct Answer", type: "mcq", text: "6. My sister is ___ friendly ___ my mother.", options: ["a) as / as", "b) so / than", "c) more / as", "d) as / than"], correct: "a" },
-                    { id: "B1_7", category: "Choose the Correct Answer", type: "mcq", text: "7. If I study hard, I ______ the exam.", options: ["a) passes", "b) passed", "c) will pass", "d) passing"], correct: "c" },
-                    { id: "B1_8", category: "Choose the Correct Answer", type: "mcq", text: "8. If people recycle more, the environment ____ cleaner.", options: ["a) becomes", "b) became", "c) will becoming", "d) becoming"], correct: "a" },
-                    { id: "B1_9", category: "Choose the Correct Answer", type: "mcq", text: "9. This is the book ______ I borrowed from the library.", options: ["a) who", "b) where", "c) which", "d) whose"], correct: "c" },
-                    { id: "B1_10", category: "Choose the Correct Answer", type: "mcq", text: "10. English ______ in many countries around the world.", options: ["a) speaks", "b) is spoken", "c) spoke", "d) speaking"], correct: "b" },
+          // Complete Sentences (5)
+          { id: "C1_Q16", section: "Complete the Sentences", type: "text", text: "By the time we arrived at the venue, the keynote speaker ______________ already left.", correct: "had" },
+          { id: "C1_Q17", section: "Complete the Sentences", type: "text", text: "She denied ______________ confidential information to the press.", correct: "leaking" },
+          { id: "C1_Q18", section: "Complete the Sentences", type: "text", text: "The issue should ______________ addressed much earlier.", correct: "have been" },
+          { id: "C1_Q19", section: "Complete the Sentences", type: "text", text: "He said that he ______________ considering resigning for several months.", correct: "had been" },
+          { id: "C1_Q20", section: "Complete the Sentences", type: "text", text: "The negotiations broke down because neither side was willing to ______________", correct: "compromise" },
 
-                    // Vocabulary /5
-                    { id: "B1_11", category: "Vocabulary", type: "mcq", text: "A person who designs buildings is an ______ .", options: ["a) engineer", "b) architect", "c) accountant", "d) electrician"], correct: "b" },
-                    { id: "B1_12", category: "Vocabulary", type: "mcq", text: "The opposite of “generous” is ______ .", options: ["a) honest", "b) selfish", "c) polite", "d) friendly"], correct: "b" },
-                    { id: "B1_13", category: "Vocabulary", type: "mcq", text: "If you feel exhausted, you should ______.", options: ["a) rest", "b) argue", "c) borrow", "d) shout"], correct: "a" },
-                    { id: "B1_14", category: "Vocabulary", type: "mcq", text: "We usually ______ a hotel before traveling.", options: ["a) repair", "b) reserve", "c) invent", "d) pollute"], correct: "b" },
-                    { id: "B1_15", category: "Vocabulary", type: "mcq", text: "My teacher gave me useful ______.", options: ["a) advice", "b) luggage", "c) furniture", "d) equipment"], correct: "a" },
+          // Correct Mistake (5)
+          { id: "C1_Q21", section: "Correct the Mistake", type: "text", text: "She suggested <u>him to apply</u> for the managerial position.", correct: "that he apply" },
+          { id: "C1_Q22", section: "Correct the Mistake", type: "text", text: "The project <u>has completed</u> ahead of schedule.", correct: "has been completed" },
+          { id: "C1_Q23", section: "Correct the Mistake", type: "text", text: "He asked me <u>where had I been</u> the previous evening.", correct: "where I had been" },
+          { id: "C1_Q24", section: "Correct the Mistake", type: "text", text: "If the documents <u>were submitted</u> earlier, the application would have been approved immediately.", correct: "had been submitted" },
+          { id: "C1_Q25", section: "Correct the Mistake", type: "text", text: "Neither the manager nor the employees <u>was</u> aware of the changes.", correct: "were" },
 
-                    // Everyday English /5
-                    { id: "B1_16", category: "Everyday English", type: "mcq", text: "“Would you like something to drink?”", options: ["a) Yes, please.", "b) I drank yesterday.", "c) At the café.", "d) It’s expensive."], correct: "a" },
-                    { id: "B1_17", category: "Everyday English", type: "mcq", text: "“I’m sorry for breaking your phone.”", options: ["a) Never mind.", "b) I’m fine.", "c) See you later.", "d) Good idea."], correct: "a" },
-                    { id: "B1_18", category: "Everyday English", type: "mcq", text: "“Could you help me carry this box?”", options: ["a) Of course.", "b) I carried it yesterday.", "c) It’s a big box.", "d) At home."], correct: "a" },
-                    { id: "B1_19", category: "Everyday English", type: "mcq", text: "“What do you think of the concert?”", options: ["a) It was amazing.", "b) I went by bus.", "c) At eight o’clock.", "d) In the city."], correct: "a" },
-                    { id: "B1_20", category: "Everyday English", type: "mcq", text: "“How often do you go to the gym?”", options: ["a) For two hours.", "b) Three times a week.", "c) At the sports center.", "d) Last Monday."], correct: "b" },
+          // Write Correct Form Verb (5)
+          { id: "C1_Q26", section: "Write the Correct Form of the Verb", type: "text", text: "By next June, the research team (conduct) ______________ the experiment for over three years.", correct: "will have been conducting" },
+          { id: "C1_Q27", section: "Write the Correct Form of the Verb", type: "text", text: "She admitted (misunderstand) ______________ the original instructions.", correct: "misunderstanding" },
+          { id: "C1_Q28", section: "Write the Correct Form of the Verb", type: "text", text: "The proposal (reject) ______________ if substantial revisions are not made.", correct: "will be rejected" },
+          { id: "C1_Q29", section: "Write the Correct Form of the Verb", type: "text", text: "He claimed that he (inform) ______________about the cancellation before anyone else.", correct: "had been informed" },
+          { id: "C1_Q30", section: "Write the Correct Form of the Verb", type: "text", text: "Had the company acted sooner, the crisis (avoid) ______________entirely.", correct: "would have been avoided" }
+        ]
+      }
+    ];
 
-                    // Complete the Sentences /5
-                    { id: "B1_21", category: "Complete the Sentences", type: "fill", text: "The homework was ______ by the students yesterday.", correct: ["done", "completed", "written", "finished"] },
-                    { id: "B1_22", category: "Complete the Sentences", type: "fill", text: "We are going ______ visit our grandparents this weekend.", correct: ["to"] },
-                    { id: "B1_23", category: "Complete the Sentences", type: "fill", text: "She is as ______ as her husband.", correct: ["tall", "kind", "smart", "old", "intelligent", "busy"] },
-                    { id: "B1_24", category: "Complete the Sentences", type: "fill", text: "If I was rich, I ______ buy a big house.", correct: ["would", "could"] },
-                    { id: "B1_25", category: "Complete the Sentences", type: "fill", text: "The man ______ lives next door is a doctor.", correct: ["who", "that"] },
+    function startTest() {
+      const nameInput = document.getElementById('studentName').value.trim();
+      const phoneInput = document.getElementById('studentPhone').value.trim();
 
-                    // Correct the Mistake /3
-                    { id: "B1_26", category: "Correct the Mistake", type: "fill", text: "The windows <u class='text-etc-red font-bold'>cleans</u> every morning.", correct: ["are cleaned"] },
-                    { id: "B1_27", category: "Correct the Mistake", type: "fill", text: "She is going <u class='text-etc-red font-bold'>visit</u> her cousin tomorrow.", correct: ["to visit"] },
-                    { id: "B1_28", category: "Correct the Mistake", type: "fill", text: "My car is as <u class='text-etc-red font-bold'>faster</u> as yours.", correct: ["fast"] },
+      if (!nameInput || !phoneInput) {
+        alert('Please fill in both your Name and Phone Number before starting.');
+        return;
+      }
 
-                    // Write the Correct Form of the Verb /2
-                    { id: "B1_29", category: "Write the Correct Form of the Verb", type: "fill", text: "If I …………. (see) Sarah, I would have told her the news.", correct: ["had seen"] },
-                    { id: "B1_30", category: "Write the Correct Form of the Verb", type: "fill", text: "The new shopping mall ……………. (build) last year.", correct: ["was built"] }
-                ]
-            },
+      studentInfo.name = nameInput;
+      studentInfo.phone = phoneInput;
 
-            B2: {
-                title: "Upper-Intermediate: B2",
-                passingMark: 25,
-                maxScore: 30,
-                nextLevel: "C1",
-                questions: [
-                    // Choose Correct Answer /5
-                    { id: "B2_1", category: "Choose the Correct Answer", type: "mcq", text: "By the time we arrived, the meeting ……………………..", options: ["a) has finished", "b) had finished", "c) was finishing", "d) finishes"], correct: "b" },
-                    { id: "B2_2", category: "Choose the Correct Answer", type: "mcq", text: "She …………..… on the project for hours before her manager called.", options: ["a) had been working", "b) has worked", "c) was worked", "d) works"], correct: "a" },
-                    { id: "B2_3", category: "Choose the Correct Answer", type: "mcq", text: "If I …………..… more confident, I would apply for the position.", options: ["a) am", "b) were", "c) had been", "d) will be"], correct: "b" },
-                    { id: "B2_4", category: "Choose the Correct Answer", type: "mcq", text: "They ……….. the new policy by next month.", options: ["a) implement", "b) implemented", "c) will have implemented", "d) have implementing"], correct: "c" },
-                    { id: "B2_5", category: "Choose the Correct Answer", type: "mcq", text: "You ……….. have informed us earlier; now it’s too late.", options: ["a) should", "b) mustn’t", "c) can’t", "d) needn’t"], correct: "a" },
+      document.getElementById('registrationView').classList.add('hide');
+      document.getElementById('testView').classList.remove('hide');
+      document.getElementById('timerDisplay').style.display = 'flex';
 
-                    // Vocabulary /5
-                    { id: "B2_6", category: "Vocabulary", type: "mcq", text: "The company is looking for a highly ……….candidate with strong leadership skills.", options: ["a) hesitant", "b) competent", "c) ordinary", "d) careless"], correct: "b" },
-                    { id: "B2_7", category: "Vocabulary", type: "mcq", text: "His explanation was so ………. that nobody understood it.", options: ["a) vague", "b) efficient", "c) accurate", "d) flexible"], correct: "a" },
-                    { id: "B2_8", category: "Vocabulary", type: "mcq", text: "The government introduced new measures to ………. pollution.", options: ["a) enhance", "b) reduce", "c) convince", "d) assume"], correct: "b" },
-                    { id: "B2_9", category: "Vocabulary", type: "mcq", text: "She was completely ………. by the unexpected news.", options: ["a) delighted", "b) exhausted", "c) astonished", "d) relieved"], correct: "c" },
-                    { id: "B2_10", category: "Vocabulary", type: "mcq", text: "The professor gave a very ………. lecture on artificial intelligence.", options: ["a) insightful", "b) temporary", "c) minor", "d) narrow"], correct: "a" },
+      startTimer();
+      renderCurrentLevel();
+    }
 
-                    // Everyday English /5
-                    { id: "B2_11", category: "Everyday English", type: "mcq", text: "“Would you mind closing the window?”", options: ["a) Not at all.", "b) I don’t think.", "c) It doesn’t matter.", "d) Never mind."], correct: "a" },
-                    { id: "B2_12", category: "Everyday English", type: "mcq", text: "“I’m afraid I can’t attend the meeting tomorrow.”", options: ["a) That sounds great.", "b) No problem, thanks for letting me know.", "c) I completely agree.", "d) You should attend."], correct: "b" },
-                    { id: "B2_13", category: "Everyday English", type: "mcq", text: "“How did your presentation go?”", options: ["a) It depends.", "b) I’d rather not.", "c) It went better than expected.", "d) That’s not necessary."], correct: "c" },
-                    { id: "B2_14", category: "Everyday English", type: "mcq", text: "“Could you possibly give me a hand with this report?”", options: ["a) Certainly, I’d be happy to help.", "b) I’m not sure it exists.", "c) I already finished yesterday.", "d) It doesn’t belong to me."], correct: "a" },
-                    { id: "B2_15", category: "Everyday English", type: "mcq", text: "“Do you think the interview went well?”", options: ["a) I’m used to it.", "b) I have no idea.", "c) I hope so.", "d) I can’t afford it."], correct: "c" },
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        timeRemainingSeconds--;
+        const mins = Math.floor(timeRemainingSeconds / 60);
+        const secs = timeRemainingSeconds % 60;
+        document.getElementById('timeRemaining').textContent = 
+          `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 
-                    // Complete the Sentences /5
-                    { id: "B2_16", category: "Complete the Sentences", type: "fill", text: "I have never ______________ such a fascinating documentary before.", correct: ["seen", "watched", "viewed"] },
-                    { id: "B2_17", category: "Complete the Sentences", type: "fill", text: "By this time tomorrow, we ______________ the final decision.", correct: ["will have made", "will make", "shall have made"] },
-                    { id: "B2_18", category: "Complete the Sentences", type: "fill", text: "She apologized for ______________ so rudely during the discussion.", correct: ["speaking", "behaving", "acting", "being"] },
-                    { id: "B2_19", category: "Complete the Sentences", type: "fill", text: "If they had prepared better, they ______________ the contract.", correct: ["would have won", "would have signed", "could have won"] },
-                    { id: "B2_20", category: "Complete the Sentences", type: "fill", text: "We were exhausted because we ______________ all day.", correct: ["had been working", "had worked", "had been walking"] },
+        if (timeRemainingSeconds <= 0) {
+          clearInterval(timerInterval);
+          alert('Time has expired! Submitting your test automatically.');
+          finishTest(true);
+        }
+      }, 1000);
+    }
 
-                    // Correct the Mistake /5
-                    { id: "B2_21", category: "Correct the Mistake", type: "fill", text: "If I <u class='text-etc-red font-bold'>would have known</u> about the traffic, I would have left earlier.", correct: ["had known"] },
-                    { id: "B2_22", category: "Correct the Mistake", type: "fill", text: "She suggested <u class='text-etc-red font-bold'>to go</u> to a different restaurant.", correct: ["going", "that we go"] },
-                    { id: "B2_23", category: "Correct the Mistake", type: "fill", text: "They <u class='text-etc-red font-bold'>has been living</u> here since 2018.", correct: ["have been living"] },
-                    { id: "B2_24", category: "Correct the Mistake", type: "fill", text: "While I <u class='text-etc-red font-bold'>studied</u>, my brother was playing loud music.", correct: ["was studying"] },
-                    { id: "B2_25", category: "Correct the Mistake", type: "fill", text: "He <u class='text-etc-red font-bold'>said me</u> that the meeting had been canceled.", correct: ["told me", "said to me"] },
+    function renderCurrentLevel() {
+      const levelData = testData[currentLevelIndex];
+      document.getElementById('currentLevelTitle').textContent = levelData.levelTitle;
 
-                    // Write the Correct Form of the Verb /5
-                    { id: "B2_26", category: "Write the Correct Form of the Verb", type: "fill", text: "By next year, she (complete) ______________ her degree.", correct: ["will have completed"] },
-                    { id: "B2_27", category: "Write the Correct Form of the Verb", type: "fill", text: "I wish I (have) ______________ more free time these days.", correct: ["had"] },
-                    { id: "B2_28", category: "Write the Correct Form of the Verb", type: "fill", text: "They (wait) ______________ for over an hour before the bus arrived.", correct: ["had been waiting", "had waited"] },
-                    { id: "B2_29", category: "Write the Correct Form of the Verb", type: "fill", text: "If he (listen) ______________to the advice, he wouldn’t have been in trouble now.", correct: ["had listened"] },
-                    { id: "B2_30", category: "Write the Correct Form of the Verb", type: "fill", text: "At 8 p.m. yesterday, we (discuss) ______________ the new proposal", correct: ["were discussing"] }
-                ]
-            },
+      const container = document.getElementById('questionsContainer');
+      container.innerHTML = '';
 
-            C1: {
-                title: "Advanced: C1",
-                passingMark: 25,
-                maxScore: 30,
-                nextLevel: "Study Skills Success",
-                questions: [
-                    // Choose correct answer /5
-                    { id: "C1_1", category: "Choose the correct answer", type: "mcq", text: "By the time the committee reached a decision, several members ______________ the proposal.", options: ["a) opposed", "b) had already opposed", "c) have opposed", "d) were opposing"], correct: "b" },
-                    { id: "C1_2", category: "Choose the correct answer", type: "mcq", text: "She claimed that she ______________ informed about the policy changes beforehand.", options: ["a) has not been", "b) had not been", "c) was not being", "d) would not be"], correct: "b" },
-                    { id: "C1_3", category: "Choose the correct answer", type: "mcq", text: "The new regulations ______________ by the board despite considerable opposition.", options: ["a) were applied", "b) applied", "c) have applying", "d) had applied"], correct: "a" },
-                    { id: "C1_4", category: "Choose the correct answer", type: "mcq", text: "Hardly ______________ the presentation when the audience started asking questions.", options: ["a) he had finished", "b) had he finished", "c) he finished", "d) did he finish"], correct: "b" },
-                    { id: "C1_5", category: "Choose the correct answer", type: "mcq", text: "It is essential that every applicant ______________the required documentation before Friday.", options: ["a) submits", "b) submit", "c) submitted", "d) will submit"], correct: "b" },
+      let currentSection = '';
 
-                    // Vocabulary /5
-                    { id: "C1_6", category: "Vocabulary", type: "mcq", text: "His argument was so _______________ that even the critics were persuaded.", options: ["a) compelling", "b) superficial", "c) reluctant", "d) obsolete"], correct: "a" },
-                    { id: "C1_7", category: "Vocabulary", type: "mcq", text: "The minister attempted to ______________ concerns regarding the economic downturn.", options: ["a) allocate", "b) alleviate", "c) abolish", "d) withdraw"], correct: "b" },
-                    { id: "C1_8", category: "Vocabulary", type: "mcq", text: "Her remarks were considered highly ______________ and offended several colleagues.", options: ["a) insightful", "b) tactful", "c) inappropriate", "d) coherent"], correct: "c" },
-                    { id: "C1_9", category: "Vocabulary", type: "mcq", text: "The company faced severe ______________ after the scandal became public.", options: ["a) prosperity", "b) backlash", "c) admiration", "d) stability"], correct: "b" },
-                    { id: "C1_10", category: "Vocabulary", type: "mcq", text: "The professor’s theory remains highly ______________ among contemporary researchers.", options: ["a) influential", "b) temporary", "c) irrelevant", "d) fragile"], correct: "a" },
+      levelData.questions.forEach((q, idx) => {
+        if (q.section !== currentSection) {
+          currentSection = q.section;
+          const secHeader = document.createElement('div');
+          secHeader.className = 'section-title';
+          secHeader.textContent = currentSection;
+          container.appendChild(secHeader);
+        }
 
-                    // Everyday English /5
-                    { id: "C1_11", category: "Everyday English", type: "mcq", text: "“I’m terribly sorry for the inconvenience.”", options: ["a) Don’t mention it.", "b) It serves you right.", "c) I can’t put up with it.", "d) That’s out of the question."], correct: "a" },
-                    { id: "C1_12", category: "Everyday English", type: "mcq", text: "“Would you be willing to elaborate on your proposal?”", options: ["a) Not in the slightest.", "b) Certainly, I’d be glad to.", "c) It’s beyond me.", "d) I’d rather you didn’t."], correct: "b" },
-                    { id: "C1_13", category: "Everyday English", type: "mcq", text: "“I was wondering if you could possibly extend the deadline.”", options: ["a) I suppose that could be arranged.", "b) That’s none of my business.", "c) I’m afraid it’s broken.", "d) You must be joking."], correct: "a" },
-                    { id: "C1_14", category: "Everyday English", type: "mcq", text: "“The conference was far more productive than I had anticipated.”", options: ["a) That’s quite understandable.", "b) I couldn’t agree more.", "c) It slipped my mind.", "d) I’m not convinced by it."], correct: "b" },
-                    { id: "C1_15", category: "Everyday English", type: "mcq", text: "“Do you happen to know when the report is due?”", options: ["a) It’s been called off.", "b) As far as I know, it’s due tomorrow.", "c) I’d rather not mention it.", "d) That depends on you."], correct: "b" },
+        const qDiv = document.createElement('div');
+        qDiv.className = 'question-item';
 
-                    // Complete the Sentences /5
-                    { id: "C1_16", category: "Complete the Sentences", type: "fill", text: "By the time we arrived at the venue, the keynote speaker ______________ already left.", correct: ["had"] },
-                    { id: "C1_17", category: "Complete the Sentences", type: "fill", text: "She denied ______________ confidential information to the press.", correct: ["disclosing", "leaking", "sharing", "giving", "revealing"] },
-                    { id: "C1_18", category: "Complete the Sentences", type: "fill", text: "The issue should ______________ addressed much earlier.", correct: ["have been"] },
-                    { id: "C1_19", category: "Complete the Sentences", type: "fill", text: "He said that he ______________ considering resigning for several months.", correct: ["had been"] },
-                    { id: "C1_20", category: "Complete the Sentences", type: "fill", text: "The negotiations broke down because neither side was willing to ______________", correct: ["compromise", "concede", "yield", "relent"] },
+        const qText = document.createElement('div');
+        qText.className = 'question-text';
+        qText.innerHTML = `${idx + 1}. ${q.text}`;
+        qDiv.appendChild(qText);
 
-                    // Correct the Mistake /5
-                    { id: "C1_21", category: "Correct the Mistake", type: "fill", text: "She suggested <u class='text-etc-red font-bold'>him to apply</u> for the managerial position.", correct: ["that he apply", "applying"] },
-                    { id: "C1_22", category: "Correct the Mistake", type: "fill", text: "The project <u class='text-etc-red font-bold'>has completed</u> ahead of schedule.", correct: ["has been completed", "was completed"] },
-                    { id: "C1_23", category: "Correct the Mistake", type: "fill", text: "He asked me where <u class='text-etc-red font-bold'>had I been</u> the previous evening.", correct: ["I had been"] },
-                    { id: "C1_24", category: "Correct the Mistake", type: "fill", text: "If the documents <u class='text-etc-red font-bold'>were submitted</u> earlier, the application would have been approved immediately.", correct: ["had been submitted"] },
-                    { id: "C1_25", category: "Correct the Mistake", type: "fill", text: "Neither the manager nor the employees <u class='text-etc-red font-bold'>was</u> aware of the changes.", correct: ["were"] },
+        if (q.type === 'mcq') {
+          const optGroup = document.createElement('div');
+          optGroup.className = 'options-group';
 
-                    // Write the Correct Form of the Verb /5
-                    { id: "C1_26", category: "Write the Correct Form of the Verb", type: "fill", text: "By next June, the research team (conduct) ______________ the experiment for over three years.", correct: ["will have been conducting", "will have conducted"] },
-                    { id: "C1_27", category: "Write the Correct Form of the Verb", type: "fill", text: "She admitted (misunderstand) ______________ the original instructions.", correct: ["misunderstanding", "having misunderstood"] },
-                    { id: "C1_28", category: "Write the Correct Form of the Verb", type: "fill", text: "The proposal (reject) ______________ if substantial revisions are not made.", correct: ["will be rejected"] },
-                    { id: "C1_29", category: "Write the Correct Form of the Verb", type: "fill", text: "He claimed that he (inform) ______________about the cancellation before anyone else.", correct: ["had been informed"] },
-                    { id: "C1_30", category: "Write the Correct Form of the Verb", type: "fill", text: "Had the company acted sooner, the crisis (avoid) ______________entirely.", correct: ["would have been avoided"] }
-                ]
-            }
-        };
+          q.options.forEach(opt => {
+            const lbl = document.createElement('label');
+            lbl.className = 'option-label';
+            lbl.innerHTML = `<input type="radio" name="${q.id}" value="${opt}"> ${opt}`;
+            optGroup.appendChild(lbl);
+          });
+          qDiv.appendChild(optGroup);
+        } else {
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.name = q.id;
+          input.className = 'text-answer-input';
+          input.placeholder = 'Type your answer...';
+          qDiv.appendChild(input);
+        }
 
-        /* -------------------------------------------------------------------------- */
-        /* APPLICATION STATE & LOGIC                                                  */
-        /* -------------------------------------------------------------------------- */
-        let student = { name: '', phone: '' };
-        let currentLevelKey = "A1";
-        let levelHistory = []; // Array of { levelKey, score, maxScore, passed, responses }
-        let timerInterval = null;
-        let timeRemaining = 30 * 60; // 30 minutes in seconds
+        container.appendChild(qDiv);
+      });
 
-        // Prevent Unintended Refresh / Navigation
-        window.addEventListener('beforeunload', (e) => {
-            if (timerInterval && timeRemaining > 0) {
-                e.preventDefault();
-                e.returnValue = '';
-            }
+      window.scrollTo(0, 0);
+    }
+
+    function submitLevel() {
+      const levelData = testData[currentLevelIndex];
+      const form = document.getElementById('levelForm');
+      const answers = [];
+
+      levelData.questions.forEach(q => {
+        let userAns = '';
+        if (q.type === 'mcq') {
+          const selected = form.querySelector(`input[name="${q.id}"]:checked`);
+          userAns = selected ? selected.value : '';
+        } else {
+          const input = form.querySelector(`input[name="${q.id}"]`);
+          userAns = input ? input.value.trim() : '';
+        }
+
+        answers.push({
+          questionId: q.id,
+          questionText: q.text,
+          section: q.section,
+          userAnswer: userAns,
+          correctAnswer: q.correct,
+          isCorrect: checkAnswer(userAns, q.correct)
         });
+      });
 
-        // Initialize Assessment
-        function startAssessment() {
-            const nameInput = document.getElementById('studentName').value.trim();
-            const phoneInput = document.getElementById('studentPhone').value.trim();
+      userAnswersStore[levelData.levelKey] = answers;
 
-            if (!nameInput || !phoneInput) {
-                alert("Please complete both Name and Phone Number fields before starting.");
-                return;
-            }
+      const score = answers.filter(a => a.isCorrect).length;
 
-            student.name = nameInput;
-            student.phone = phoneInput;
+      if (score >= levelData.threshold && currentLevelIndex < testData.length - 1) {
+        currentLevelIndex++;
+        renderCurrentLevel();
+      } else {
+        finishTest(false);
+      }
+    }
 
-            // Hide registration, show test layout and header timer
-            document.getElementById('registrationSection').classList.add('hidden');
-            document.getElementById('testSectionContainer').classList.remove('hidden');
-            document.getElementById('timerContainer').classList.remove('hidden');
+    function checkAnswer(userAns, correctAns) {
+      if (!userAns) return false;
+      const cleanUser = userAns.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+      const cleanCorrect = correctAns.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+      return cleanUser === cleanCorrect || cleanUser.includes(cleanCorrect);
+    }
 
-            startGlobalTimer();
-            loadLevelSection("A1");
+    function finishTest(timeOut = false) {
+      clearInterval(timerInterval);
+      
+      document.getElementById('testView').classList.add('hide');
+      document.getElementById('timerDisplay').style.display = 'none';
+      document.getElementById('resultView').classList.remove('hide');
+
+      const lastLevelKey = testData[currentLevelIndex].levelKey;
+      const lastScore = userAnswersStore[lastLevelKey] ? userAnswersStore[lastLevelKey].filter(a => a.isCorrect).length : 0;
+      const threshold = testData[currentLevelIndex].threshold;
+
+      let finalAssignedLevel = "";
+      if (lastScore < threshold) {
+        finalAssignedLevel = getLevelName(lastLevelKey);
+      } else {
+        if (lastLevelKey === "C1") {
+          finalAssignedLevel = "Study Skills Success (Passed C1)";
+        } else {
+          finalAssignedLevel = getLevelName(lastLevelKey);
         }
+      }
 
-        // Timer Function
-        function startGlobalTimer() {
-            updateTimerDisplay();
-            timerInterval = setInterval(() => {
-                timeRemaining--;
-                updateTimerDisplay();
+      document.getElementById('finalAssignedLevel').textContent = finalAssignedLevel;
+      
+      const timeSpentSecs = 1800 - timeRemainingSeconds;
+      const minsSpent = Math.floor(timeSpentSecs / 60);
+      const secsSpent = timeSpentSecs % 60;
+      document.getElementById('timeTakenText').textContent = 
+        `Test duration: ${minsSpent}m ${secsSpent}s ${timeOut ? '(Terminated by 30-min timer limit)' : ''}`;
 
-                if (timeRemaining <= 0) {
-                    clearInterval(timerInterval);
-                    alert("Time is up! Your test will now be automatically finalized.");
-                    autoSubmitRemaining();
-                }
-            }, 1000);
-        }
+      generateReportTable();
 
-        function updateTimerDisplay() {
-            const mins = Math.floor(timeRemaining / 60);
-            const secs = timeRemaining % 60;
-            document.getElementById('timerDisplay').innerText = 
-                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }
+      // Dispatch results automatically via EmailJS
+      sendResultsViaEmail(finalAssignedLevel);
+    }
 
-        // Render Question Sets for current Level
-        function loadLevelSection(levelKey) {
-            currentLevelKey = levelKey;
-            const data = testData[levelKey];
+    function getLevelName(key) {
+      switch(key) {
+        case "A1": return "Elementary (A1)";
+        case "A2": return "Pre-intermediate (A2)";
+        case "B1": return "Intermediate (B1)";
+        case "B2": return "Upper-Intermediate (B2)";
+        case "C1": return "Advanced (C1)";
+        default: return key;
+      }
+    }
 
-            document.getElementById('currentLevelBadge').innerText = `Level: ${levelKey}`;
-            document.getElementById('currentLevelTitle').innerText = data.title;
+    function generateReportTable() {
+      const tbody = document.getElementById('reportTableBody');
+      tbody.innerHTML = '';
+      let globalIndex = 1;
 
-            const container = document.getElementById('questionsContainer');
-            container.innerHTML = '';
+      Object.keys(userAnswersStore).forEach(levelKey => {
+        const answers = userAnswersStore[levelKey];
+        answers.forEach(item => {
+          const tr = document.createElement('tr');
+          
+          tr.innerHTML = `
+            <td>${globalIndex++}</td>
+            <td>${item.questionText}</td>
+            <td>${item.userAnswer || '<em>No Answer</em>'}</td>
+            <td>${item.correctAnswer}</td>
+            <td class="${item.isCorrect ? 'status-correct' : 'status-incorrect'}">
+              ${item.isCorrect ? 'Correct ✓' : 'Incorrect ✗'}
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      });
+    }
 
-            let currentCategory = '';
+    function sendResultsViaEmail(finalLevel) {
+      // Create detailed report string
+      let fullReportText = `STUDENT PLACEMENT REPORT\n`;
+      fullReportText += `===============================\n`;
+      fullReportText += `Name: ${studentInfo.name}\n`;
+      fullReportText += `Phone: ${studentInfo.phone}\n`;
+      fullReportText += `Assigned Level: ${finalLevel}\n`;
+      fullReportText += `===============================\n\n`;
 
-            data.questions.forEach((q, idx) => {
-                // Category Banner Insertion
-                if (q.category !== currentCategory) {
-                    currentCategory = q.category;
-                    const catHeader = document.createElement('div');
-                    catHeader.className = "pt-4 pb-2 border-b-2 border-etc-red flex items-center justify-between";
-                    catHeader.innerHTML = `<h3 class="text-base sm:text-lg font-bold text-etc-black uppercase tracking-wide">${currentCategory}</h3>`;
-                    container.appendChild(catHeader);
-                }
+      Object.keys(userAnswersStore).forEach(levelKey => {
+        const answers = userAnswersStore[levelKey];
+        const score = answers.filter(a => a.isCorrect).length;
+        fullReportText += `LEVEL ${levelKey} Score: ${score}/30\n`;
+        answers.forEach((ans, idx) => {
+          fullReportText += `${idx + 1}. ${ans.questionText}\n`;
+          fullReportText += `   Student Answer: ${ans.userAnswer || 'None'}\n`;
+          fullReportText += `   Correct Answer: ${ans.correctAnswer}\n`;
+          fullReportText += `   Status: ${ans.isCorrect ? 'CORRECT' : 'INCORRECT'}\n\n`;
+        });
+      });
 
-                // Question Card
-                const qCard = document.createElement('div');
-                qCard.className = "bg-gray-50 border border-gray-200 rounded-xl p-5 hover:border-gray-300 transition space-y-3";
+      // EmailJS Payload
+      const templateParams = {
+        student_name: studentInfo.name,
+        student_phone: studentInfo.phone,
+        assigned_level: finalLevel,
+        test_report: fullReportText
+      };
 
-                if (q.type === 'mcq') {
-                    let optionsHTML = q.options.map(opt => {
-                        const val = opt.charAt(0); // 'a', 'b', 'c', 'd'
-                        return `
-                            <label class="flex items-center space-x-3 p-3 rounded-lg border border-gray-200 bg-white hover:bg-red-50/50 cursor-pointer transition">
-                                <input type="radio" name="${q.id}" value="${val}" class="w-4 h-4 text-etc-red focus:ring-etc-red border-gray-300">
-                                <span class="text-sm font-medium text-gray-800">${opt}</span>
-                            </label>
-                        `;
-                    }).join('');
-
-                    qCard.innerHTML = `
-                        <div class="flex items-start space-x-2">
-                            <span class="font-bold text-etc-red text-sm">${idx + 1}.</span>
-                            <p class="font-semibold text-gray-900 text-sm sm:text-base">${q.text}</p>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
-                            ${optionsHTML}
-                        </div>
-                    `;
-                } else if (q.type === 'fill') {
-                    qCard.innerHTML = `
-                        <div class="flex items-start space-x-2">
-                            <span class="font-bold text-etc-red text-sm">${idx + 1}.</span>
-                            <p class="font-semibold text-gray-900 text-sm sm:text-base">${q.text}</p>
-                        </div>
-                        <div class="pt-2">
-                            <input type="text" name="${q.id}" placeholder="Type your answer here..." 
-                                class="w-full sm:w-80 px-4 py-2.5 bg-white rounded-lg border border-gray-300 input-focus text-sm font-medium">
-                        </div>
-                    `;
-                }
-
-                container.appendChild(qCard);
-            });
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Flexible Text Normalizer for Fill-in Questions
-        function normalizeAnswer(str) {
-            if (!str) return '';
-            return str.toString()
-                .toLowerCase()
-                .trim()
-                .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")
-                .replace(/\s+/g, " ");
-        }
-
-        // Grade Current Section & Check Progression
-        function submitCurrentLevel() {
-            const data = testData[currentLevelKey];
-            let levelScore = 0;
-            let userResponses = [];
-
-            // Grade questions
-            data.questions.forEach(q => {
-                let userAns = '';
-                let isCorrect = false;
-
-                if (q.type === 'mcq') {
-                    const selected = document.querySelector(`input[name="${q.id}"]:checked`);
-                    userAns = selected ? selected.value : '';
-                    if (userAns === q.correct) {
-                        isCorrect = true;
-                        levelScore += 1;
-                    }
-                } else if (q.type === 'fill') {
-                    const inputElem = document.querySelector(`input[name="${q.id}"]`);
-                    userAns = inputElem ? inputElem.value.trim() : '';
-                    const normUser = normalizeAnswer(userAns);
-
-                    // Check against list of acceptable answers
-                    const match = q.correct.some(c => normalizeAnswer(c) === normUser);
-                    if (match && normUser !== '') {
-                        isCorrect = true;
-                        levelScore += 1;
-                    }
-                }
-
-                userResponses.push({
-                    qId: q.id,
-                    questionText: q.text,
-                    category: q.category,
-                    userAnswer: userAns || '(No Answer)',
-                    correctAnswerDisplay: q.type === 'mcq' ? q.correct.toUpperCase() : q.correct.join(' / '),
-                    isCorrect: isCorrect
-                });
-            });
-
-            const passed = levelScore >= data.passingMark;
-
-            levelHistory.push({
-                levelKey: currentLevelKey,
-                title: data.title,
-                score: levelScore,
-                maxScore: data.maxScore,
-                passingMark: data.passingMark,
-                passed: passed,
-                responses: userResponses
-            });
-
-            // Progression Logic
-            if (passed && data.nextLevel && testData[data.nextLevel]) {
-                // Advance to Next Level
-                loadLevelSection(data.nextLevel);
-            } else {
-                // Test Completed or Stopped at current level
-                finalizeAssessment();
-            }
-        }
-
-        // Auto submit if timer runs out mid-section
-        function autoSubmitRemaining() {
-            if (document.getElementById('testSectionContainer').classList.contains('hidden')) return;
-            submitCurrentLevel();
-        }
-
-        // Finalize Test and Show Detailed Results
-        function finalizeAssessment() {
-            if (timerInterval) clearInterval(timerInterval);
-
-            // Hide test section, show results
-            document.getElementById('testSectionContainer').classList.add('hidden');
-            document.getElementById('timerContainer').classList.add('hidden');
-            document.getElementById('resultsSection').classList.remove('hidden');
-
-            // Determine Overall Level
-            const lastAttempt = levelHistory[levelHistory.length - 1];
-            let finalLevelText = "";
-
-            if (lastAttempt.levelKey === 'A1' && !lastAttempt.passed) finalLevelText = "Elementary A1";
-            else if (lastAttempt.levelKey === 'A1' && lastAttempt.passed) finalLevelText = "Pre-Intermediate A2 Candidate";
-            else if (lastAttempt.levelKey === 'A2' && !lastAttempt.passed) finalLevelText = "Pre-Intermediate A2";
-            else if (lastAttempt.levelKey === 'A2' && lastAttempt.passed) finalLevelText = "Intermediate B1 Candidate";
-            else if (lastAttempt.levelKey === 'B1' && !lastAttempt.passed) finalLevelText = "Intermediate B1";
-            else if (lastAttempt.levelKey === 'B1' && lastAttempt.passed) finalLevelText = "Upper-Intermediate B2 Candidate";
-            else if (lastAttempt.levelKey === 'B2' && !lastAttempt.passed) finalLevelText = "Upper-Intermediate B2";
-            else if (lastAttempt.levelKey === 'B2' && lastAttempt.passed) finalLevelText = "Advanced C1 Candidate";
-            else if (lastAttempt.levelKey === 'C1' && !lastAttempt.passed) finalLevelText = "Advanced C1";
-            else if (lastAttempt.levelKey === 'C1' && lastAttempt.passed) finalLevelText = "Advanced C1+ / Study Skills Success";
-
-            // Populate Student Card
-            document.getElementById('resStudentName').innerText = student.name;
-            document.getElementById('resStudentPhone').innerText = student.phone;
-            document.getElementById('resAssignedLevel').innerText = finalLevelText;
-
-            // Render Summary Table
-            const summaryTableBody = document.getElementById('summaryTableBody');
-            summaryTableBody.innerHTML = '';
-
-            levelHistory.forEach(item => {
-                const pct = Math.round((item.score / item.maxScore) * 100);
-                const statusBadge = item.passed 
-                    ? `<span class="px-2.5 py-1 bg-green-100 text-green-800 text-xs font-bold rounded-full"><i class="fa-solid fa-check mr-1"></i> Passed (${item.score}/${item.maxScore})</span>`
-                    : `<span class="px-2.5 py-1 bg-red-100 text-red-800 text-xs font-bold rounded-full"><i class="fa-solid fa-xmark mr-1"></i> Final Level Reached</span>`;
-
-                summaryTableBody.innerHTML += `
-                    <tr>
-                        <td class="p-3.5 font-bold text-gray-900">${item.title}</td>
-                        <td class="p-3.5 font-bold text-etc-red">${item.score} / ${item.maxScore}</td>
-                        <td class="p-3.5">${pct}%</td>
-                        <td class="p-3.5">${statusBadge}</td>
-                    </tr>
-                `;
-            });
-
-            // Render Detailed Question Answers Report
-            const reportContainer = document.getElementById('detailedReportContainer');
-            reportContainer.innerHTML = '';
-
-            levelHistory.forEach(lvl => {
-                const lvlBlock = document.createElement('div');
-                lvlBlock.className = "border border-gray-200 rounded-xl p-6 bg-gray-50/50 space-y-4";
-
-                let rows = lvl.responses.map((r, i) => `
-                    <tr class="border-b border-gray-100 text-xs sm:text-sm">
-                        <td class="py-3 px-2 font-bold text-gray-500 w-8">${i+1}</td>
-                        <td class="py-3 px-2 font-medium text-gray-800">${r.questionText}</td>
-                        <td class="py-3 px-2 font-semibold ${r.isCorrect ? 'text-green-600' : 'text-red-600'}">${r.userAnswer}</td>
-                        <td class="py-3 px-2 font-semibold text-gray-700">${r.correctAnswerDisplay}</td>
-                        <td class="py-3 px-2 text-center">
-                            ${r.isCorrect 
-                                ? '<i class="fa-solid fa-circle-check text-green-500 text-lg"></i>' 
-                                : '<i class="fa-solid fa-circle-xmark text-red-500 text-lg"></i>'}
-                        </td>
-                    </tr>
-                `).join('');
-
-                lvlBlock.innerHTML = `
-                    <div class="flex items-center justify-between border-b border-gray-200 pb-3">
-                        <h4 class="font-bold text-lg text-etc-black">${lvl.title}</h4>
-                        <span class="text-sm font-bold text-etc-red">Score: ${lvl.score} / ${lvl.maxScore}</span>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left">
-                            <thead>
-                                <tr class="text-xs uppercase text-gray-400 border-b border-gray-200">
-                                    <th class="py-2 px-2">#</th>
-                                    <th class="py-2 px-2">Question</th>
-                                    <th class="py-2 px-2">Student Answer</th>
-                                    <th class="py-2 px-2">Correct Answer</th>
-                                    <th class="py-2 px-2 text-center">Result</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${rows}
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-
-                reportContainer.appendChild(lvlBlock);
-            });
-
-            // Dispatch Emails in Background
-            sendResultsToAdmins(finalLevelText);
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Email Dispatch Simulation
-        function sendResultsToAdmins(assignedLevel) {
-            const payload = {
-                studentName: student.name,
-                studentPhone: student.phone,
-                assignedLevel: assignedLevel,
-                history: levelHistory,
-                recipients: ["ismaalaa665@gmail.com", "eng.rami-sh@hotmail.com", "hr@etc-m.uk"]
-            };
-
-            // Simulated background fetch post
-            console.log("Transmitting result payload to specified endpoints...", payload);
-
-            setTimeout(() => {
-                const statusEl = document.getElementById('emailStatus');
-                if (statusEl) {
-                    statusEl.innerHTML = `<i class="fa-solid fa-check-double text-green-500 mr-1"></i> Results successfully submitted and emailed to center administration.`;
-                }
-            }, 1500);
-        }
-    </script>
+      // Replace YOUR_SERVICE_ID and YOUR_TEMPLATE_ID with your EmailJS identifiers
+      emailjs.send("service_default", "template_default", templateParams)
+        .then(function(response) {
+          console.log("SUCCESS! Test results emailed.", response.status, response.text);
+        }, function(error) {
+          console.error("FAILED to send email...", error);
+        });
+    }
+  </script>
 </body>
 </html>
